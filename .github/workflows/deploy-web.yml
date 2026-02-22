@@ -1,0 +1,62 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  export-web:
+    runs-on: ubuntu-latest
+    container:
+      image: barichello/godot-ci:4.6.1
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup export templates
+        run: |
+          mkdir -p /github/home/.local/share/godot/export_templates/4.6.1.stable
+          mv /root/.local/share/godot/export_templates/4.6.1.stable/* /github/home/.local/share/godot/export_templates/4.6.1.stable/ 2>/dev/null || true
+
+      - name: Import project
+        run: |
+          godot --headless --import 2>&1 || true
+          godot --headless --import 2>&1 || true
+
+      - name: Export to Web
+        run: |
+          mkdir -p build/web
+          godot --headless --export-release "Web" build/web/index.html
+
+      - name: Add coi-serviceworker
+        run: |
+          cp build/web/coi-serviceworker.js build/web/coi-serviceworker.js 2>/dev/null || true
+          # If the file wasn't in the repo, create it inline
+          if [ ! -f build/web/coi-serviceworker.js ]; then
+            curl -o build/web/coi-serviceworker.js https://raw.githubusercontent.com/niccokunzmann/niccokunzmann.github.io/master/coi-serviceworker/coi-serviceworker.js 2>/dev/null || true
+          fi
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/web
+
+  deploy:
+    needs: export-web
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
