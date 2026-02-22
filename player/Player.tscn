@@ -1,0 +1,132 @@
+[gd_scene load_steps=29 format=3]
+
+[ext_resource type="Script" path="res://scripts/player/cat_controller.gd" id="1_83hs8"]
+[ext_resource type="PackedScene" path="res://player/cat.glb" id="2_x8kxw"]
+[ext_resource type="AnimationLibrary" path="res://player/Character_AnimationLibrary.tres" id="3_aqcbf"]
+[ext_resource type="Script" path="res://player/animation_controller.gd" id="4_gskgj"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_06mnu"]
+radius = 0.12
+height = 0.28
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_swipe"]
+radius = 0.35
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_mhpjh"]
+animation = &"default/Jump"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_ndjxb"]
+animation = &"default/Idle"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_5qrx2"]
+animation = &"default/Jump_Start"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_b32pr"]
+animation = &"default/Jump_Land"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_hbkom"]
+animation = &"default/Sprint"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_d4g0h"]
+animation = &"default/Walk"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_v4f8b"]
+xfade_time = 0.1
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_t8epa"]
+xfade_time = 0.1
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_w24id"]
+xfade_time = 0.1
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_uewl2"]
+xfade_time = 0.1
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ofhxi"]
+xfade_time = 0.1
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_yu5hk"]
+xfade_time = 0.1
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_q6miu"]
+xfade_time = 0.1
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_mlfor"]
+xfade_time = 0.1
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_2m0d2"]
+xfade_time = 0.1
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_8nth8"]
+xfade_time = 0.1
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_8tqfn"]
+xfade_time = 0.1
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_stbqk"]
+xfade_time = 0.1
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_y617q"]
+xfade_time = 0.1
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_8eyfg"]
+xfade_time = 0.1
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_76mgg"]
+xfade_time = 0.15
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ddnt4"]
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_a0lmo"]
+states/Fall/node = SubResource("AnimationNodeAnimation_mhpjh")
+states/Fall/position = Vector2(800, 200)
+states/Idle/node = SubResource("AnimationNodeAnimation_ndjxb")
+states/Idle/position = Vector2(300, 100)
+states/Jump/node = SubResource("AnimationNodeAnimation_5qrx2")
+states/Jump/position = Vector2(550, 200)
+states/Land/node = SubResource("AnimationNodeAnimation_b32pr")
+states/Land/position = Vector2(1050, 200)
+states/Run/node = SubResource("AnimationNodeAnimation_hbkom")
+states/Run/position = Vector2(800, 0)
+states/Walk/node = SubResource("AnimationNodeAnimation_d4g0h")
+states/Walk/position = Vector2(550, 0)
+transitions = ["Idle", "Walk", SubResource("AnimationNodeStateMachineTransition_v4f8b"), "Walk", "Idle", SubResource("AnimationNodeStateMachineTransition_t8epa"), "Walk", "Run", SubResource("AnimationNodeStateMachineTransition_w24id"), "Run", "Walk", SubResource("AnimationNodeStateMachineTransition_uewl2"), "Idle", "Jump", SubResource("AnimationNodeStateMachineTransition_ofhxi"), "Walk", "Jump", SubResource("AnimationNodeStateMachineTransition_yu5hk"), "Run", "Jump", SubResource("AnimationNodeStateMachineTransition_q6miu"), "Idle", "Fall", SubResource("AnimationNodeStateMachineTransition_mlfor"), "Walk", "Fall", SubResource("AnimationNodeStateMachineTransition_2m0d2"), "Run", "Fall", SubResource("AnimationNodeStateMachineTransition_8nth8"), "Run", "Idle", SubResource("AnimationNodeStateMachineTransition_8tqfn"), "Jump", "Fall", SubResource("AnimationNodeStateMachineTransition_stbqk"), "Fall", "Land", SubResource("AnimationNodeStateMachineTransition_y617q"), "Land", "Fall", SubResource("AnimationNodeStateMachineTransition_8eyfg"), "Land", "Idle", SubResource("AnimationNodeStateMachineTransition_76mgg"), "Start", "Idle", SubResource("AnimationNodeStateMachineTransition_ddnt4")]
+
+[node name="Player" type="CharacterBody3D"]
+collision_layer = 4
+collision_mask = 3
+script = ExtResource("1_83hs8")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.14, 0)
+shape = SubResource("CapsuleShape3D_06mnu")
+
+[node name="PawSwipeArea" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0.25)
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PawSwipeArea"]
+shape = SubResource("SphereShape3D_swipe")
+
+[node name="Visuals" type="Node3D" parent="."]
+transform = Transform3D(-0.5, 0, -4.371139e-08, 0, 0.5, 0, 4.371139e-08, 0, -0.5, 0, 0, 0)
+
+[node name="CharacterMesh" type="Node3D" parent="Visuals" instance=ExtResource("2_x8kxw")]
+unique_name_in_owner = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Visuals"]
+root_node = NodePath("../CharacterMesh")
+libraries = {
+&"default": ExtResource("3_aqcbf")
+}
+
+[node name="AnimationTree" type="AnimationTree" parent="Visuals"]
+root_node = NodePath("%CharacterMesh")
+tree_root = SubResource("AnimationNodeStateMachine_a0lmo")
+anim_player = NodePath("../AnimationPlayer")
+
+[node name="AnimationController" type="Node" parent="."]
+script = ExtResource("4_gskgj")

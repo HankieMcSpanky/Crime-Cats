@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:kenney.nl)",
+      "WebFetch(domain:quaternius.com)",
+      "WebFetch(domain:ladoncha.itch.io)",
+      "WebFetch(domain:cubedbear.itch.io)",
+      "WebFetch(domain:kaylousberg.itch.io)",
+      "WebFetch(domain:poly.pizza)",
+      "WebFetch(domain:lowpolyassets.itch.io)",
+      "Bash(git init:*)",
+      "Bash(git branch:*)",
+      "Bash(git add:*)"
+    ]
+  }
+}
