@@ -1,9 +1,10 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=7 format=3 uid="uid://b65vux7t5i6cl"]
 
 [ext_resource type="PackedScene" path="res://scenes/house.tscn" id="1_house"]
 [ext_resource type="PackedScene" path="res://player/Player.tscn" id="2_player"]
-[ext_resource type="Script" path="res://camera/orbit_camera.gd" id="3_camera"]
-[ext_resource type="Script" path="res://scripts/game_manager.gd" id="4_gm"]
+[ext_resource type="PackedScene" path="res://player/Player2_Fifi.tscn" id="2_player2"]
+[ext_resource type="Script" uid="uid://c58cmvi3eyxp5" path="res://camera/orbit_camera.gd" id="3_camera"]
+[ext_resource type="Script" uid="uid://ckuq63mqsvotm" path="res://scripts/game_manager.gd" id="4_gm"]
 [ext_resource type="PackedScene" path="res://scenes/game_hud.tscn" id="5_hud"]
 
 [node name="Main" type="Node3D"]
@@ -13,12 +14,15 @@ script = ExtResource("4_gm")
 
 [node name="House" parent="." instance=ExtResource("1_house")]
 
-[node name="Player" parent="." instance=ExtResource("2_player")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0.2, 0)
+[node name="Player_Fifi" parent="." instance=ExtResource("2_player2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0.5, 3)
+
+[node name="Player2_Tabby" parent="." instance=ExtResource("2_player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0.5, 3)
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.94, 0.34, 0, -0.34, 0.94, 0, 2, 6)
 script = ExtResource("3_camera")
-target_path = NodePath("../Player")
+target_path = NodePath("../Player_Fifi")
 
 [node name="GameHUD" parent="." instance=ExtResource("5_hud")]

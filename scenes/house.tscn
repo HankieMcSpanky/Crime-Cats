@@ -1,16 +1,17 @@
-[gd_scene load_steps=70 format=3]
+[gd_scene load_steps=37 format=3]
 
 [ext_resource type="Script" path="res://scripts/interactables/knockable_object.gd" id="1_knock"]
 [ext_resource type="Script" path="res://scripts/interactables/trash_can.gd" id="2_trash"]
 [ext_resource type="Script" path="res://scripts/interactables/hiding_spot.gd" id="3_hide"]
-[ext_resource type="Shader" path="res://shaders/wood_floor.gdshader" id="4_wood"]
-[ext_resource type="Shader" path="res://shaders/tile_floor.gdshader" id="5_tile"]
-[ext_resource type="Shader" path="res://shaders/carpet.gdshader" id="6_carpet"]
-[ext_resource type="Shader" path="res://shaders/wall_paint.gdshader" id="7_wall"]
-[ext_resource type="Shader" path="res://shaders/glass.gdshader" id="8_glass"]
-[ext_resource type="Script" path="res://scripts/interactables/curtain.gd" id="9_curtain"]
-[ext_resource type="Script" path="res://scripts/interactables/scratchable_surface.gd" id="10_scratch"]
-[ext_resource type="Script" path="res://scripts/interactables/toilet_paper.gd" id="11_tp"]
+[ext_resource type="PackedScene" path="res://owner/Owner.tscn" id="4_owner"]
+
+; === PATROL PATH CURVE ===
+[sub_resource type="Curve3D" id="Curve3D_patrol"]
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, -1, 0, 7, 0, 0, 0, 0, 0, 0, 14, 0, 7, 0, 0, 0, 0, 0, 0, 14, 0, -7, 0, 0, 0, 0, 0, 0, 0, 0, -7, 0, 0, 0, 0, 0, 0, -1, 0, 0),
+"tilts": PackedFloat32Array(0, 0, 0, 0, 0)
+}
+point_count = 5
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_1"]
 sky_top_color = Color(0.4, 0.5, 0.6, 1)
@@ -31,122 +32,83 @@ tonemap_mode = 2
 glow_enabled = true
 glow_intensity = 0.3
 
-; ============================================================
-; SHADER MATERIALS - Floors
-; ============================================================
+; === FLOOR MATERIALS ===
+[sub_resource type="StandardMaterial3D" id="Mat_WoodFloor"]
+albedo_color = Color(0.72, 0.53, 0.34, 1)
+roughness = 0.85
 
-[sub_resource type="ShaderMaterial" id="Mat_WoodFloor"]
-shader = ExtResource("4_wood")
-shader_parameter/plank_color_light = Vector3(0.76, 0.56, 0.38)
-shader_parameter/plank_color_dark = Vector3(0.62, 0.42, 0.26)
-shader_parameter/gap_color = Vector3(0.35, 0.22, 0.12)
-shader_parameter/plank_width = 0.8
-shader_parameter/plank_length = 3.0
-shader_parameter/gap_width = 0.025
-shader_parameter/roughness_val = 0.75
+[sub_resource type="StandardMaterial3D" id="Mat_TileFloor"]
+albedo_color = Color(0.85, 0.88, 0.9, 1)
+roughness = 0.6
 
-[sub_resource type="ShaderMaterial" id="Mat_KitchenTile"]
-shader = ExtResource("5_tile")
-shader_parameter/tile_color_1 = Vector3(0.92, 0.93, 0.95)
-shader_parameter/tile_color_2 = Vector3(0.78, 0.82, 0.88)
-shader_parameter/grout_color = Vector3(0.6, 0.58, 0.55)
-shader_parameter/tile_size = 0.5
-shader_parameter/grout_width = 0.035
-shader_parameter/roughness_val = 0.35
-shader_parameter/checkerboard = true
+[sub_resource type="StandardMaterial3D" id="Mat_CarpetFloor"]
+albedo_color = Color(0.45, 0.52, 0.65, 1)
+roughness = 1.0
 
-[sub_resource type="ShaderMaterial" id="Mat_HallwayWood"]
-shader = ExtResource("4_wood")
-shader_parameter/plank_color_light = Vector3(0.68, 0.5, 0.33)
-shader_parameter/plank_color_dark = Vector3(0.55, 0.38, 0.22)
-shader_parameter/gap_color = Vector3(0.3, 0.2, 0.1)
-shader_parameter/plank_width = 0.7
-shader_parameter/plank_length = 4.0
-shader_parameter/gap_width = 0.025
-shader_parameter/roughness_val = 0.7
+[sub_resource type="StandardMaterial3D" id="Mat_HallwayFloor"]
+albedo_color = Color(0.65, 0.48, 0.3, 1)
+roughness = 0.8
 
-[sub_resource type="ShaderMaterial" id="Mat_Carpet"]
-shader = ExtResource("6_carpet")
-shader_parameter/carpet_color = Vector3(0.4, 0.48, 0.65)
-shader_parameter/carpet_color_alt = Vector3(0.35, 0.42, 0.56)
-shader_parameter/roughness_val = 0.98
-shader_parameter/pattern_scale = 4.0
+; === WALL MATERIALS ===
+[sub_resource type="StandardMaterial3D" id="Mat_WallCream"]
+albedo_color = Color(0.95, 0.92, 0.85, 1)
+roughness = 0.9
 
-[sub_resource type="ShaderMaterial" id="Mat_BathroomTile"]
-shader = ExtResource("5_tile")
-shader_parameter/tile_color_1 = Vector3(0.88, 0.93, 0.88)
-shader_parameter/tile_color_2 = Vector3(0.72, 0.83, 0.75)
-shader_parameter/grout_color = Vector3(0.58, 0.6, 0.56)
-shader_parameter/tile_size = 0.35
-shader_parameter/grout_width = 0.03
-shader_parameter/roughness_val = 0.3
-shader_parameter/checkerboard = true
+[sub_resource type="StandardMaterial3D" id="Mat_WallBlue"]
+albedo_color = Color(0.75, 0.82, 0.9, 1)
+roughness = 0.9
 
-; ============================================================
-; SHADER MATERIALS - Walls
-; ============================================================
+[sub_resource type="StandardMaterial3D" id="Mat_WallGreen"]
+albedo_color = Color(0.78, 0.88, 0.78, 1)
+roughness = 0.9
 
-[sub_resource type="ShaderMaterial" id="Mat_WallCream"]
-shader = ExtResource("7_wall")
-shader_parameter/wall_color = Vector3(0.95, 0.92, 0.85)
-shader_parameter/variation_amount = 0.025
-shader_parameter/roughness_val = 0.85
-shader_parameter/stroke_scale = 15.0
+[sub_resource type="StandardMaterial3D" id="Mat_WallWhite"]
+albedo_color = Color(0.93, 0.93, 0.95, 1)
+roughness = 0.7
 
-[sub_resource type="ShaderMaterial" id="Mat_WallBlue"]
-shader = ExtResource("7_wall")
-shader_parameter/wall_color = Vector3(0.72, 0.8, 0.9)
-shader_parameter/variation_amount = 0.03
-shader_parameter/roughness_val = 0.85
-shader_parameter/stroke_scale = 18.0
+[sub_resource type="StandardMaterial3D" id="Mat_WallYellow"]
+albedo_color = Color(0.95, 0.9, 0.7, 1)
+roughness = 0.9
 
-[sub_resource type="ShaderMaterial" id="Mat_WallGreen"]
-shader = ExtResource("7_wall")
-shader_parameter/wall_color = Vector3(0.75, 0.88, 0.78)
-shader_parameter/variation_amount = 0.025
-shader_parameter/roughness_val = 0.85
-shader_parameter/stroke_scale = 16.0
-
-[sub_resource type="ShaderMaterial" id="Mat_WallYellow"]
-shader = ExtResource("7_wall")
-shader_parameter/wall_color = Vector3(0.95, 0.9, 0.7)
-shader_parameter/variation_amount = 0.03
-shader_parameter/roughness_val = 0.85
-shader_parameter/stroke_scale = 14.0
-
-[sub_resource type="ShaderMaterial" id="Mat_WallWhite"]
-shader = ExtResource("7_wall")
-shader_parameter/wall_color = Vector3(0.93, 0.93, 0.95)
-shader_parameter/variation_amount = 0.015
-shader_parameter/roughness_val = 0.8
-shader_parameter/stroke_scale = 20.0
-
-; ============================================================
-; SHADER MATERIALS - Glass
-; ============================================================
-
-[sub_resource type="ShaderMaterial" id="Mat_Glass"]
-shader = ExtResource("8_glass")
-shader_parameter/glass_tint = Vector3(0.65, 0.82, 0.95)
-shader_parameter/opacity = 0.25
-shader_parameter/edge_opacity = 0.45
-
-; ============================================================
-; STANDARD MATERIALS
-; ============================================================
-
+; === CEILING ===
 [sub_resource type="StandardMaterial3D" id="Mat_Ceiling"]
 albedo_color = Color(0.97, 0.97, 0.95, 1)
 roughness = 0.95
 
-[sub_resource type="StandardMaterial3D" id="Mat_Baseboard"]
-albedo_color = Color(0.96, 0.96, 0.97, 1)
-roughness = 0.6
+; === INTERACTABLE SHAPES ===
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mug"]
+albedo_color = Color(0.9, 0.9, 0.85, 1)
 
-[sub_resource type="StandardMaterial3D" id="Mat_WindowFrame"]
-albedo_color = Color(0.92, 0.92, 0.9, 1)
-roughness = 0.6
+[sub_resource type="CylinderMesh" id="CylinderMesh_mug"]
+top_radius = 0.04
+bottom_radius = 0.035
+height = 0.1
+material = SubResource("StandardMaterial3D_mug")
 
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_mug"]
+radius = 0.04
+height = 0.1
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_trash"]
+albedo_color = Color(0.7, 0.7, 0.7, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_trash"]
+top_radius = 0.18
+bottom_radius = 0.15
+height = 0.5
+material = SubResource("StandardMaterial3D_trash")
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_trash"]
+radius = 0.18
+height = 0.5
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_hide_couch"]
+size = Vector3(2.0, 0.4, 1.0)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_hide_bed"]
+size = Vector3(2.0, 0.4, 1.5)
+
+; === FURNITURE MATERIALS ===
 [sub_resource type="StandardMaterial3D" id="Mat_Couch"]
 albedo_color = Color(0.7, 0.35, 0.2, 1)
 roughness = 0.95
@@ -167,13 +129,6 @@ roughness = 0.5
 albedo_color = Color(0.1, 0.1, 0.12, 1)
 roughness = 0.3
 
-[sub_resource type="StandardMaterial3D" id="Mat_TVScreen"]
-albedo_color = Color(0.2, 0.3, 0.5, 1)
-emission_enabled = true
-emission = Color(0.15, 0.2, 0.35, 1)
-emission_energy_multiplier = 0.3
-roughness = 0.1
-
 [sub_resource type="StandardMaterial3D" id="Mat_Bookshelf"]
 albedo_color = Color(0.5, 0.35, 0.22, 1)
 roughness = 0.8
@@ -181,132 +136,6 @@ roughness = 0.8
 [sub_resource type="StandardMaterial3D" id="Mat_Porcelain"]
 albedo_color = Color(0.95, 0.95, 0.97, 1)
 roughness = 0.3
-
-[sub_resource type="StandardMaterial3D" id="Mat_Curtain"]
-albedo_color = Color(0.85, 0.75, 0.6, 1)
-roughness = 1.0
-cull_mode = 2
-
-[sub_resource type="StandardMaterial3D" id="Mat_CurtainRod"]
-albedo_color = Color(0.6, 0.55, 0.5, 1)
-roughness = 0.4
-metallic = 0.3
-
-[sub_resource type="StandardMaterial3D" id="Mat_Vase"]
-albedo_color = Color(0.4, 0.55, 0.7, 1)
-roughness = 0.3
-
-[sub_resource type="StandardMaterial3D" id="Mat_PlantPot"]
-albedo_color = Color(0.7, 0.45, 0.3, 1)
-roughness = 0.8
-
-[sub_resource type="StandardMaterial3D" id="Mat_Plant"]
-albedo_color = Color(0.3, 0.6, 0.25, 1)
-roughness = 0.9
-
-[sub_resource type="StandardMaterial3D" id="Mat_ToiletPaper"]
-albedo_color = Color(0.95, 0.95, 0.92, 1)
-roughness = 0.9
-
-[sub_resource type="StandardMaterial3D" id="Mat_PictureFrame"]
-albedo_color = Color(0.45, 0.32, 0.2, 1)
-roughness = 0.7
-
-[sub_resource type="StandardMaterial3D" id="Mat_Rug"]
-albedo_color = Color(0.65, 0.3, 0.25, 1)
-roughness = 1.0
-
-[sub_resource type="StandardMaterial3D" id="Mat_Mug"]
-albedo_color = Color(0.9, 0.9, 0.85, 1)
-
-[sub_resource type="StandardMaterial3D" id="Mat_MugRed"]
-albedo_color = Color(0.85, 0.3, 0.25, 1)
-
-[sub_resource type="StandardMaterial3D" id="Mat_MugBlue"]
-albedo_color = Color(0.3, 0.5, 0.8, 1)
-
-[sub_resource type="StandardMaterial3D" id="Mat_Trash"]
-albedo_color = Color(0.7, 0.7, 0.7, 1)
-
-; ============================================================
-; MESH / COLLISION SHAPES
-; ============================================================
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_mug"]
-top_radius = 0.04
-bottom_radius = 0.035
-height = 0.1
-material = SubResource("Mat_Mug")
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_mug_red"]
-top_radius = 0.04
-bottom_radius = 0.035
-height = 0.1
-material = SubResource("Mat_MugRed")
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_mug_blue"]
-top_radius = 0.04
-bottom_radius = 0.035
-height = 0.1
-material = SubResource("Mat_MugBlue")
-
-[sub_resource type="CylinderShape3D" id="CylinderShape3D_mug"]
-radius = 0.04
-height = 0.1
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_trash"]
-top_radius = 0.18
-bottom_radius = 0.15
-height = 0.5
-material = SubResource("Mat_Trash")
-
-[sub_resource type="CylinderShape3D" id="CylinderShape3D_trash"]
-radius = 0.18
-height = 0.5
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_vase"]
-top_radius = 0.06
-bottom_radius = 0.08
-height = 0.2
-material = SubResource("Mat_Vase")
-
-[sub_resource type="CylinderShape3D" id="CylinderShape3D_vase"]
-radius = 0.08
-height = 0.2
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_hide_couch"]
-size = Vector3(2.0, 0.4, 1.0)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_hide_bed"]
-size = Vector3(2.0, 0.4, 1.5)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_scratch"]
-size = Vector3(2.8, 0.8, 1.2)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_curtain_grab"]
-size = Vector3(2.0, 1.5, 0.6)
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_tp_roll"]
-top_radius = 0.06
-bottom_radius = 0.06
-height = 0.12
-material = SubResource("Mat_ToiletPaper")
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_tp_area"]
-size = Vector3(0.5, 0.5, 0.5)
-
-[sub_resource type="BoxMesh" id="BoxMesh_curtain"]
-size = Vector3(2.4, 2.0, 0.05)
-material = SubResource("Mat_Curtain")
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_rod"]
-top_radius = 0.02
-bottom_radius = 0.02
-height = 2.8
-material = SubResource("Mat_CurtainRod")
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_rod"]
-size = Vector3(2.8, 0.04, 0.04)
 
 ; ============================================================
 ; ROOT NODE
@@ -318,34 +147,39 @@ size = Vector3(2.8, 0.04, 0.04)
 ; ============================================================
 [node name="Floors" type="Node3D" parent="."]
 
+; --- Living Room Floor (SW): x=-7 to 7, z=2 to 11 => center(0, 6.5), size(14, 9) ---
 [node name="LivingRoomFloor" type="CSGBox3D" parent="Floors"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 6.5)
 size = Vector3(14, 0.2, 9)
 material = SubResource("Mat_WoodFloor")
 use_collision = true
 
+; --- Kitchen Floor (SE): x=7 to 19, z=2 to 11 => center(13, 6.5), size(12, 9) ---
 [node name="KitchenFloor" type="CSGBox3D" parent="Floors"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, -0.1, 6.5)
 size = Vector3(12, 0.2, 9)
-material = SubResource("Mat_KitchenTile")
+material = SubResource("Mat_TileFloor")
 use_collision = true
 
+; --- Hallway Floor (Center): x=-7 to 19, z=-2 to 2 => center(6, 0), size(26, 4) ---
 [node name="HallwayFloor" type="CSGBox3D" parent="Floors"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, -0.1, 0)
 size = Vector3(26, 0.2, 4)
-material = SubResource("Mat_HallwayWood")
+material = SubResource("Mat_HallwayFloor")
 use_collision = true
 
+; --- Bedroom Floor (NW): x=-7 to 7, z=-11 to -2 => center(0, -6.5), size(14, 9) ---
 [node name="BedroomFloor" type="CSGBox3D" parent="Floors"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, -0.1, -6.5)
-size = Vector3(20, 0.2, 9)
-material = SubResource("Mat_Carpet")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, -6.5)
+size = Vector3(14, 0.2, 9)
+material = SubResource("Mat_CarpetFloor")
 use_collision = true
 
+; --- Bathroom Floor (NE): x=13 to 19, z=-11 to -2 => center(16, -6.5), size(6, 9) ---
 [node name="BathroomFloor" type="CSGBox3D" parent="Floors"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, -0.1, -6.5)
 size = Vector3(6, 0.2, 9)
-material = SubResource("Mat_BathroomTile")
+material = SubResource("Mat_TileFloor")
 use_collision = true
 
 ; ============================================================
@@ -358,10 +192,11 @@ material = SubResource("Mat_Ceiling")
 use_collision = true
 
 ; ============================================================
-; EXTERIOR WALLS
+; EXTERIOR WALLS (using CSGCombiner3D for window cutouts)
 ; ============================================================
 [node name="ExteriorWalls" type="Node3D" parent="."]
 
+; --- South Wall (front of house): z=11, x from -7 to 19 ---
 [node name="SouthWall" type="CSGCombiner3D" parent="ExteriorWalls"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 1.5, 11.1)
 use_collision = true
@@ -380,6 +215,7 @@ operation = 2
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0.3, 0)
 size = Vector3(2.5, 1.8, 0.4)
 
+; --- North Wall (back of house): z=-11 ---
 [node name="NorthWall" type="CSGCombiner3D" parent="ExteriorWalls"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 1.5, -11.1)
 use_collision = true
@@ -398,6 +234,7 @@ operation = 2
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0.3, 0)
 size = Vector3(1.5, 1.5, 0.4)
 
+; --- West Wall: x=-7 ---
 [node name="WestWall" type="CSGCombiner3D" parent="ExteriorWalls"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.1, 1.5, 0)
 use_collision = true
@@ -416,6 +253,7 @@ operation = 2
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 6)
 size = Vector3(0.4, 1.8, 2.5)
 
+; --- East Wall: x=19 ---
 [node name="EastWall" type="CSGCombiner3D" parent="ExteriorWalls"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19.1, 1.5, 0)
 use_collision = true
@@ -434,6 +272,7 @@ size = Vector3(0.4, 1.8, 2.0)
 ; ============================================================
 [node name="InteriorWalls" type="Node3D" parent="."]
 
+; --- Living/Kitchen divider wall: x=7, z from 2 to 11 (with doorway) ---
 [node name="LivingKitchenWall" type="CSGCombiner3D" parent="InteriorWalls"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 1.5, 6.5)
 use_collision = true
@@ -447,6 +286,7 @@ operation = 2
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.4, -3.5)
 size = Vector3(0.3, 2.4, 1.2)
 
+; --- Bedroom/Bathroom divider wall: x=13, z from -11 to -2 (with doorway from hallway side) ---
 [node name="BedroomBathroomWall" type="CSGCombiner3D" parent="InteriorWalls"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 1.5, -6.5)
 use_collision = true
@@ -455,6 +295,7 @@ use_collision = true
 size = Vector3(0.15, 3, 9)
 material = SubResource("Mat_WallWhite")
 
+; --- South hallway wall (Living/Kitchen side): z=2, x from -7 to 19 (with 2 doorways) ---
 [node name="HallwaySouthWall" type="CSGCombiner3D" parent="InteriorWalls"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 1.5, 2)
 use_collision = true
@@ -473,6 +314,7 @@ operation = 2
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, -0.4, 0)
 size = Vector3(1.2, 2.4, 0.3)
 
+; --- North hallway wall (Bedroom/Bathroom side): z=-2, x from -7 to 19 (with 2 doorways) ---
 [node name="HallwayNorthWall" type="CSGCombiner3D" parent="InteriorWalls"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 1.5, -2)
 use_collision = true
@@ -492,100 +334,76 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, -0.4, 0)
 size = Vector3(1.0, 2.4, 0.3)
 
 ; ============================================================
-; WINDOW GLASS + FRAMES
+; WINDOW GLASS (translucent panes)
 ; ============================================================
 [node name="WindowGlass" type="Node3D" parent="."]
 
-[node name="SouthFrame1" type="CSGBox3D" parent="WindowGlass"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 1.8, 11.15)
-size = Vector3(2.7, 2.0, 0.06)
-material = SubResource("Mat_WindowFrame")
-
+; South Window 1 glass
 [node name="SouthGlass1" type="CSGBox3D" parent="WindowGlass"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 1.8, 11.1)
 size = Vector3(2.4, 1.7, 0.05)
-material = SubResource("Mat_Glass")
+material = SubResource("Mat_WallBlue")
 
-[node name="SouthFrame2" type="CSGBox3D" parent="WindowGlass"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 1.8, 11.15)
-size = Vector3(2.7, 2.0, 0.06)
-material = SubResource("Mat_WindowFrame")
-
+; South Window 2 glass
 [node name="SouthGlass2" type="CSGBox3D" parent="WindowGlass"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 1.8, 11.1)
 size = Vector3(2.4, 1.7, 0.05)
-material = SubResource("Mat_Glass")
+material = SubResource("Mat_WallBlue")
 
-[node name="NorthFrame1" type="CSGBox3D" parent="WindowGlass"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 1.8, -11.15)
-size = Vector3(2.7, 2.0, 0.06)
-material = SubResource("Mat_WindowFrame")
-
+; North Window 1 glass
 [node name="NorthGlass1" type="CSGBox3D" parent="WindowGlass"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 1.8, -11.1)
 size = Vector3(2.4, 1.7, 0.05)
-material = SubResource("Mat_Glass")
+material = SubResource("Mat_WallBlue")
 
-[node name="NorthFrame2" type="CSGBox3D" parent="WindowGlass"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 1.8, -11.15)
-size = Vector3(1.7, 1.7, 0.06)
-material = SubResource("Mat_WindowFrame")
-
+; North Window 2 glass
 [node name="NorthGlass2" type="CSGBox3D" parent="WindowGlass"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 1.8, -11.1)
 size = Vector3(1.4, 1.4, 0.05)
-material = SubResource("Mat_Glass")
+material = SubResource("Mat_WallBlue")
 
-[node name="WestFrame1" type="CSGBox3D" parent="WindowGlass"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.15, 1.8, -6)
-size = Vector3(0.06, 2.0, 2.7)
-material = SubResource("Mat_WindowFrame")
-
+; West Window 1 glass
 [node name="WestGlass1" type="CSGBox3D" parent="WindowGlass"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.1, 1.8, -6)
 size = Vector3(0.05, 1.7, 2.4)
-material = SubResource("Mat_Glass")
+material = SubResource("Mat_WallBlue")
 
-[node name="WestFrame2" type="CSGBox3D" parent="WindowGlass"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.15, 1.8, 6)
-size = Vector3(0.06, 2.0, 2.7)
-material = SubResource("Mat_WindowFrame")
-
+; West Window 2 glass
 [node name="WestGlass2" type="CSGBox3D" parent="WindowGlass"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.1, 1.8, 6)
 size = Vector3(0.05, 1.7, 2.4)
-material = SubResource("Mat_Glass")
+material = SubResource("Mat_WallBlue")
 
-[node name="EastFrame1" type="CSGBox3D" parent="WindowGlass"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19.15, 1.8, 6)
-size = Vector3(0.06, 2.0, 2.2)
-material = SubResource("Mat_WindowFrame")
-
+; East Window glass
 [node name="EastGlass1" type="CSGBox3D" parent="WindowGlass"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19.1, 1.8, 6)
 size = Vector3(0.05, 1.7, 1.9)
-material = SubResource("Mat_Glass")
+material = SubResource("Mat_WallBlue")
 
 ; ============================================================
-; ACCENT WALLS
+; ROOM-COLORED ACCENT WALLS (paint different rooms)
 ; ============================================================
 [node name="RoomAccentWalls" type="Node3D" parent="."]
 
+; Bedroom - blue tint on north-facing interior wall
 [node name="BedroomAccent" type="CSGBox3D" parent="RoomAccentWalls"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -10.95)
 size = Vector3(13.8, 2.95, 0.05)
 material = SubResource("Mat_WallBlue")
 
+; Kitchen - yellow tint on east-facing interior wall
 [node name="KitchenAccent" type="CSGBox3D" parent="RoomAccentWalls"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18.95, 1.5, 6.5)
 size = Vector3(0.05, 2.95, 8.8)
 material = SubResource("Mat_WallYellow")
 
+; Bathroom - green tint on back wall
 [node name="BathroomAccent" type="CSGBox3D" parent="RoomAccentWalls"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 1.5, -10.95)
 size = Vector3(5.8, 2.95, 0.05)
 material = SubResource("Mat_WallGreen")
 
+; Living room - warm cream on south interior wall
 [node name="LivingAccent" type="CSGBox3D" parent="RoomAccentWalls"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 10.95)
 size = Vector3(13.8, 2.95, 0.05)
@@ -599,45 +417,29 @@ material = SubResource("Mat_WallCream")
 [node name="SouthBaseboard" type="CSGBox3D" parent="Baseboards"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0.06, 10.9)
 size = Vector3(25.8, 0.12, 0.08)
-material = SubResource("Mat_Baseboard")
+material = SubResource("Mat_WallWhite")
 
 [node name="NorthBaseboard" type="CSGBox3D" parent="Baseboards"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0.06, -10.9)
 size = Vector3(25.8, 0.12, 0.08)
-material = SubResource("Mat_Baseboard")
+material = SubResource("Mat_WallWhite")
 
 [node name="WestBaseboard" type="CSGBox3D" parent="Baseboards"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.9, 0.06, 0)
 size = Vector3(0.08, 0.12, 21.8)
-material = SubResource("Mat_Baseboard")
+material = SubResource("Mat_WallWhite")
 
 [node name="EastBaseboard" type="CSGBox3D" parent="Baseboards"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18.9, 0.06, 0)
 size = Vector3(0.08, 0.12, 21.8)
-material = SubResource("Mat_Baseboard")
+material = SubResource("Mat_WallWhite")
 
 ; ============================================================
-; DECORATIVE RUGS
-; ============================================================
-[node name="Decor" type="Node3D" parent="."]
-
-; Living room rug under coffee table
-[node name="LivingRoomRug" type="CSGBox3D" parent="Decor"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0.01, 8.5)
-size = Vector3(4.0, 0.02, 3.5)
-material = SubResource("Mat_Rug")
-
-; Bedroom rug beside bed
-[node name="BedroomRug" type="CSGBox3D" parent="Decor"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0.01, -8)
-size = Vector3(2.0, 0.02, 1.5)
-material = SubResource("Mat_Rug")
-
-; ============================================================
-; FURNITURE - LIVING ROOM
+; FURNITURE - LIVING ROOM (SW quadrant: x=-7 to 7, z=2 to 11)
 ; ============================================================
 [node name="Furniture" type="Node3D" parent="."]
 
+; --- Couch against south wall ---
 [node name="Couch" type="StaticBody3D" parent="Furniture"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 9.5)
 
@@ -672,6 +474,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.65, 0.55, -0.05)
 size = Vector3(1.1, 0.12, 0.8)
 material = SubResource("Mat_CouchCushion")
 
+; --- Coffee Table in front of couch ---
 [node name="CoffeeTable" type="StaticBody3D" parent="Furniture"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 7.8)
 
@@ -701,6 +504,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6, 0.19, 0.25)
 size = Vector3(0.06, 0.38, 0.06)
 material = SubResource("Mat_TableWood")
 
+; --- TV Stand + TV against west wall ---
 [node name="TVStand" type="StaticBody3D" parent="Furniture"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.5, 0, 7)
 
@@ -718,8 +522,9 @@ material = SubResource("Mat_TVBlack")
 [node name="TVScreen" type="CSGBox3D" parent="Furniture/TVStand"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.97, -0.01)
 size = Vector3(1.45, 0.78, 0.05)
-material = SubResource("Mat_TVScreen")
+material = SubResource("Mat_WallBlue")
 
+; --- Bookshelf against west wall ---
 [node name="Bookshelf" type="StaticBody3D" parent="Furniture"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.2, 0, 4)
 
@@ -739,21 +544,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, -0.02)
 size = Vector3(1.1, 0.04, 0.36)
 material = SubResource("Mat_TableWood")
 
-; --- Plant pot on bookshelf ---
-[node name="PlantPot" type="CSGBox3D" parent="Furniture/Bookshelf"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.3, -0.02)
-size = Vector3(0.15, 0.15, 0.15)
-material = SubResource("Mat_PlantPot")
-
-[node name="PlantLeaves" type="CSGBox3D" parent="Furniture/Bookshelf"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.48, -0.02)
-size = Vector3(0.2, 0.2, 0.2)
-material = SubResource("Mat_Plant")
-
 ; ============================================================
-; FURNITURE - KITCHEN
+; FURNITURE - KITCHEN (SE quadrant: x=7 to 19, z=2 to 11)
 ; ============================================================
 
+; --- Kitchen Counter along east wall ---
 [node name="KitchenCounter" type="StaticBody3D" parent="Furniture"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 0, 6.5)
 
@@ -766,8 +561,9 @@ use_collision = true
 [node name="Countertop" type="CSGBox3D" parent="Furniture/KitchenCounter"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.92, 0)
 size = Vector3(1.3, 0.06, 5.1)
-material = SubResource("Mat_Porcelain")
+material = SubResource("Mat_WallWhite")
 
+; --- Dining Table in center of kitchen ---
 [node name="DiningTable" type="StaticBody3D" parent="Furniture"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, 7)
 
@@ -797,6 +593,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.65, 0.37, 0.4)
 size = Vector3(0.06, 0.74, 0.06)
 material = SubResource("Mat_TableWood")
 
+; --- Chair 1 ---
 [node name="Chair1" type="StaticBody3D" parent="Furniture"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11, 0, 7)
 
@@ -811,6 +608,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, 0.22)
 size = Vector3(0.5, 0.5, 0.06)
 material = SubResource("Mat_TableWood")
 
+; --- Chair 2 ---
 [node name="Chair2" type="StaticBody3D" parent="Furniture"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 0, 7)
 
@@ -826,9 +624,10 @@ size = Vector3(0.5, 0.5, 0.06)
 material = SubResource("Mat_TableWood")
 
 ; ============================================================
-; FURNITURE - BEDROOM
+; FURNITURE - BEDROOM (NW quadrant: x=-7 to 7, z=-11 to -2)
 ; ============================================================
 
+; --- Bed against north wall ---
 [node name="Bed" type="StaticBody3D" parent="Furniture"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, -9)
 
@@ -841,23 +640,24 @@ use_collision = true
 [node name="Mattress" type="CSGBox3D" parent="Furniture/Bed"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, 0)
 size = Vector3(2.0, 0.15, 2.6)
-material = SubResource("Mat_Porcelain")
+material = SubResource("Mat_WallWhite")
 
 [node name="Pillow1" type="CSGBox3D" parent="Furniture/Bed"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.45, 0.68, -1.1)
 size = Vector3(0.6, 0.12, 0.4)
-material = SubResource("Mat_Baseboard")
+material = SubResource("Mat_WallBlue")
 
 [node name="Pillow2" type="CSGBox3D" parent="Furniture/Bed"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.45, 0.68, -1.1)
 size = Vector3(0.6, 0.12, 0.4)
-material = SubResource("Mat_Baseboard")
+material = SubResource("Mat_WallBlue")
 
 [node name="Headboard" type="CSGBox3D" parent="Furniture/Bed"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, -1.35)
 size = Vector3(2.2, 0.8, 0.1)
 material = SubResource("Mat_TableWood")
 
+; --- Nightstand ---
 [node name="Nightstand" type="StaticBody3D" parent="Furniture"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, -9.5)
 
@@ -867,6 +667,7 @@ size = Vector3(0.5, 0.6, 0.4)
 material = SubResource("Mat_TableWood")
 use_collision = true
 
+; --- Dresser against west wall ---
 [node name="Dresser" type="StaticBody3D" parent="Furniture"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.2, 0, -6)
 
@@ -877,9 +678,10 @@ material = SubResource("Mat_TableWood")
 use_collision = true
 
 ; ============================================================
-; FURNITURE - BATHROOM
+; FURNITURE - BATHROOM (NE quadrant: x=13 to 19, z=-11 to -2)
 ; ============================================================
 
+; --- Toilet ---
 [node name="Toilet" type="StaticBody3D" parent="Furniture"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 0, -9)
 
@@ -894,6 +696,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0.25)
 size = Vector3(0.4, 0.35, 0.2)
 material = SubResource("Mat_Porcelain")
 
+; --- Bathtub along north wall ---
 [node name="Bathtub" type="StaticBody3D" parent="Furniture"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 0, -10)
 
@@ -903,6 +706,7 @@ size = Vector3(1.8, 0.6, 0.8)
 material = SubResource("Mat_Porcelain")
 use_collision = true
 
+; --- Bathroom Sink ---
 [node name="BathroomSink" type="StaticBody3D" parent="Furniture"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 0, -5)
 
@@ -917,149 +721,433 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.37, 0)
 size = Vector3(0.2, 0.74, 0.2)
 material = SubResource("Mat_Porcelain")
 
+; --- Armchair (Living Room) ---
+[node name="Armchair" type="StaticBody3D" parent="Furniture"]
+transform = Transform3D(0.707, 0, 0.707, 0, 1, 0, -0.707, 0, 0.707, -4, 0, 5)
+
+[node name="Seat" type="CSGBox3D" parent="Furniture/Armchair"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
+size = Vector3(0.8, 0.25, 0.8)
+material = SubResource("Mat_CouchFabric")
+use_collision = true
+
+[node name="Back" type="CSGBox3D" parent="Furniture/Armchair"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, -0.35)
+size = Vector3(0.8, 0.6, 0.15)
+material = SubResource("Mat_CouchFabric")
+use_collision = true
+
+[node name="ArmL" type="CSGBox3D" parent="Furniture/Armchair"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.4, 0.45, 0)
+size = Vector3(0.12, 0.4, 0.7)
+material = SubResource("Mat_CouchFabric")
+
+[node name="ArmR" type="CSGBox3D" parent="Furniture/Armchair"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4, 0.45, 0)
+size = Vector3(0.12, 0.4, 0.7)
+material = SubResource("Mat_CouchFabric")
+
+; --- Side Table with Lamp (Living Room) ---
+[node name="SideTable" type="StaticBody3D" parent="Furniture"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0, 9)
+
+[node name="Top" type="CSGBox3D" parent="Furniture/SideTable"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+size = Vector3(0.5, 0.05, 0.5)
+material = SubResource("Mat_DarkWood")
+use_collision = true
+
+[node name="Leg" type="CSGCylinder3D" parent="Furniture/SideTable"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+radius = 0.06
+height = 0.5
+material = SubResource("Mat_DarkWood")
+
+[node name="LampBase" type="CSGCylinder3D" parent="Furniture/SideTable"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, 0)
+radius = 0.08
+height = 0.05
+material = SubResource("Mat_DarkWood")
+
+[node name="LampPole" type="CSGCylinder3D" parent="Furniture/SideTable"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
+radius = 0.015
+height = 0.4
+material = SubResource("Mat_DarkWood")
+
+[node name="LampShade" type="CSGCylinder3D" parent="Furniture/SideTable"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
+radius = 0.15
+height = 0.25
+material = SubResource("Mat_Cream")
+
+; --- Plant (Living Room Corner) ---
+[node name="PlantPot" type="StaticBody3D" parent="Furniture"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.5, 0, 9.5)
+
+[node name="Pot" type="CSGCylinder3D" parent="Furniture/PlantPot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
+radius = 0.25
+height = 0.4
+material = SubResource("Mat_Terracotta")
+use_collision = true
+
+[node name="Soil" type="CSGCylinder3D" parent="Furniture/PlantPot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.38, 0)
+radius = 0.22
+height = 0.05
+material = SubResource("Mat_DarkWood")
+
+[node name="Plant" type="CSGSphere3D" parent="Furniture/PlantPot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, 0)
+radius = 0.35
+material = SubResource("Mat_Plant")
+
+; --- Kitchen Counter ---
+[node name="KitchenCounter" type="StaticBody3D" parent="Furniture"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17, 0, 9)
+
+[node name="Base" type="CSGBox3D" parent="Furniture/KitchenCounter"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+size = Vector3(4, 0.9, 0.6)
+material = SubResource("Mat_DarkWood")
+use_collision = true
+
+[node name="Top" type="CSGBox3D" parent="Furniture/KitchenCounter"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.92, 0)
+size = Vector3(4.1, 0.04, 0.65)
+material = SubResource("Mat_Counter")
+use_collision = true
+
+; --- Refrigerator ---
+[node name="Refrigerator" type="StaticBody3D" parent="Furniture"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19, 0, 5)
+
+[node name="Body" type="CSGBox3D" parent="Furniture/Refrigerator"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+size = Vector3(0.9, 2, 0.7)
+material = SubResource("Mat_Appliance")
+use_collision = true
+
+[node name="Handle1" type="CSGBox3D" parent="Furniture/Refrigerator"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.4, 1.5, 0.36)
+size = Vector3(0.04, 0.3, 0.04)
+material = SubResource("Mat_DarkWood")
+
+[node name="Handle2" type="CSGBox3D" parent="Furniture/Refrigerator"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.4, 0.6, 0.36)
+size = Vector3(0.04, 0.25, 0.04)
+material = SubResource("Mat_DarkWood")
+
+; --- Stove/Oven ---
+[node name="Stove" type="StaticBody3D" parent="Furniture"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17, 0, 5)
+
+[node name="Body" type="CSGBox3D" parent="Furniture/Stove"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+size = Vector3(0.7, 0.9, 0.6)
+material = SubResource("Mat_Appliance")
+use_collision = true
+
+[node name="Top" type="CSGBox3D" parent="Furniture/Stove"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.92, 0)
+size = Vector3(0.72, 0.04, 0.62)
+material = SubResource("Mat_StoveTop")
+use_collision = true
+
+[node name="Burner1" type="CSGCylinder3D" parent="Furniture/Stove"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.18, 0.95, -0.15)
+radius = 0.1
+height = 0.02
+material = SubResource("Mat_DarkWood")
+
+[node name="Burner2" type="CSGCylinder3D" parent="Furniture/Stove"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.18, 0.95, -0.15)
+radius = 0.1
+height = 0.02
+material = SubResource("Mat_DarkWood")
+
+[node name="Burner3" type="CSGCylinder3D" parent="Furniture/Stove"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.18, 0.95, 0.15)
+radius = 0.08
+height = 0.02
+material = SubResource("Mat_DarkWood")
+
+[node name="Burner4" type="CSGCylinder3D" parent="Furniture/Stove"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.18, 0.95, 0.15)
+radius = 0.08
+height = 0.02
+material = SubResource("Mat_DarkWood")
+
+; --- Kitchen Cabinet Upper ---
+[node name="UpperCabinet" type="StaticBody3D" parent="Furniture"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17, 0, 9)
+
+[node name="Body" type="CSGBox3D" parent="Furniture/UpperCabinet"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 0)
+size = Vector3(4, 0.8, 0.35)
+material = SubResource("Mat_DarkWood")
+use_collision = true
+
+; --- Wardrobe (Bedroom) ---
+[node name="Wardrobe" type="StaticBody3D" parent="Furniture"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0, -9)
+
+[node name="Body" type="CSGBox3D" parent="Furniture/Wardrobe"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, 0)
+size = Vector3(1.6, 2.2, 0.6)
+material = SubResource("Mat_LightWood")
+use_collision = true
+
+[node name="DoorL" type="CSGBox3D" parent="Furniture/Wardrobe"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.4, 1.1, 0.31)
+size = Vector3(0.78, 2.15, 0.02)
+material = SubResource("Mat_DarkWood")
+
+[node name="DoorR" type="CSGBox3D" parent="Furniture/Wardrobe"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4, 1.1, 0.31)
+size = Vector3(0.78, 2.15, 0.02)
+material = SubResource("Mat_DarkWood")
+
+[node name="HandleL" type="CSGBox3D" parent="Furniture/Wardrobe"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.05, 1.1, 0.34)
+size = Vector3(0.04, 0.15, 0.04)
+material = SubResource("Mat_DarkWood")
+
+[node name="HandleR" type="CSGBox3D" parent="Furniture/Wardrobe"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, 1.1, 0.34)
+size = Vector3(0.04, 0.15, 0.04)
+material = SubResource("Mat_DarkWood")
+
+; --- Desk (Bedroom) ---
+[node name="Desk" type="StaticBody3D" parent="Furniture"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0, -9)
+
+[node name="Top" type="CSGBox3D" parent="Furniture/Desk"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
+size = Vector3(1.2, 0.04, 0.6)
+material = SubResource("Mat_LightWood")
+use_collision = true
+
+[node name="LegL" type="CSGBox3D" parent="Furniture/Desk"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.55, 0.37, 0)
+size = Vector3(0.05, 0.74, 0.55)
+material = SubResource("Mat_LightWood")
+
+[node name="LegR" type="CSGBox3D" parent="Furniture/Desk"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.55, 0.37, 0)
+size = Vector3(0.05, 0.74, 0.55)
+material = SubResource("Mat_LightWood")
+
+[node name="Drawer" type="CSGBox3D" parent="Furniture/Desk"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.35, 0.55, 0)
+size = Vector3(0.35, 0.15, 0.5)
+material = SubResource("Mat_LightWood")
+
+; --- Desk Chair (Bedroom) ---
+[node name="DeskChair" type="StaticBody3D" parent="Furniture"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0, -8)
+
+[node name="Seat" type="CSGBox3D" parent="Furniture/DeskChair"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+size = Vector3(0.45, 0.06, 0.45)
+material = SubResource("Mat_CouchFabric")
+use_collision = true
+
+[node name="Back" type="CSGBox3D" parent="Furniture/DeskChair"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, -0.2)
+size = Vector3(0.42, 0.55, 0.04)
+material = SubResource("Mat_CouchFabric")
+
+[node name="Pole" type="CSGCylinder3D" parent="Furniture/DeskChair"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.22, 0)
+radius = 0.04
+height = 0.44
+material = SubResource("Mat_DarkWood")
+
+[node name="Base" type="CSGCylinder3D" parent="Furniture/DeskChair"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.03, 0)
+radius = 0.25
+height = 0.06
+material = SubResource("Mat_DarkWood")
+
+; --- Second Nightstand (Bedroom) ---
+[node name="Nightstand2" type="StaticBody3D" parent="Furniture"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, -5.5)
+
+[node name="Body" type="CSGBox3D" parent="Furniture/Nightstand2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
+size = Vector3(0.5, 0.6, 0.4)
+material = SubResource("Mat_LightWood")
+use_collision = true
+
+[node name="Drawer" type="CSGBox3D" parent="Furniture/Nightstand2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, 0.21)
+size = Vector3(0.45, 0.18, 0.02)
+material = SubResource("Mat_DarkWood")
+
+; --- Bedside Lamp (Bedroom) ---
+[node name="BedsideLamp" type="StaticBody3D" parent="Furniture"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, -5.5)
+
+[node name="Base" type="CSGCylinder3D" parent="Furniture/BedsideLamp"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.65, 0)
+radius = 0.06
+height = 0.04
+material = SubResource("Mat_DarkWood")
+
+[node name="Pole" type="CSGCylinder3D" parent="Furniture/BedsideLamp"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.82, 0)
+radius = 0.015
+height = 0.3
+material = SubResource("Mat_DarkWood")
+
+[node name="Shade" type="CSGCylinder3D" parent="Furniture/BedsideLamp"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.02, 0)
+radius = 0.12
+height = 0.18
+material = SubResource("Mat_Cream")
+
+; --- Bathroom Shelf ---
+[node name="BathroomShelf" type="StaticBody3D" parent="Furniture"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 0, -6)
+
+[node name="Shelf" type="CSGBox3D" parent="Furniture/BathroomShelf"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+size = Vector3(0.6, 0.04, 0.15)
+material = SubResource("Mat_Porcelain")
+use_collision = true
+
+[node name="Bracket1" type="CSGBox3D" parent="Furniture/BathroomShelf"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.25, 1.1, 0)
+size = Vector3(0.04, 0.2, 0.12)
+material = SubResource("Mat_DarkWood")
+
+[node name="Bracket2" type="CSGBox3D" parent="Furniture/BathroomShelf"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, 1.1, 0)
+size = Vector3(0.04, 0.2, 0.12)
+material = SubResource("Mat_DarkWood")
+
+; --- Towel Rack (Bathroom) ---
+[node name="TowelRack" type="StaticBody3D" parent="Furniture"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 0, -9)
+
+[node name="Bar" type="CSGCylinder3D" parent="Furniture/TowelRack"]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 0, 1.2, 0)
+radius = 0.02
+height = 0.6
+material = SubResource("Mat_DarkWood")
+
+[node name="BracketL" type="CSGCylinder3D" parent="Furniture/TowelRack"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.2, -0.05)
+radius = 0.03
+height = 0.1
+material = SubResource("Mat_DarkWood")
+
+[node name="BracketR" type="CSGCylinder3D" parent="Furniture/TowelRack"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.2, -0.05)
+radius = 0.03
+height = 0.1
+material = SubResource("Mat_DarkWood")
+
+[node name="Towel" type="CSGBox3D" parent="Furniture/TowelRack"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.95, 0.02)
+size = Vector3(0.5, 0.5, 0.04)
+material = SubResource("Mat_Towel")
+
+; --- Console Table (Hallway) ---
+[node name="ConsoleTable" type="StaticBody3D" parent="Furniture"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, -2)
+
+[node name="Top" type="CSGBox3D" parent="Furniture/ConsoleTable"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
+size = Vector3(1.2, 0.04, 0.35)
+material = SubResource("Mat_DarkWood")
+use_collision = true
+
+[node name="Leg1" type="CSGBox3D" parent="Furniture/ConsoleTable"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.55, 0.4, 0.12)
+size = Vector3(0.05, 0.8, 0.05)
+material = SubResource("Mat_DarkWood")
+
+[node name="Leg2" type="CSGBox3D" parent="Furniture/ConsoleTable"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.55, 0.4, 0.12)
+size = Vector3(0.05, 0.8, 0.05)
+material = SubResource("Mat_DarkWood")
+
+[node name="Leg3" type="CSGBox3D" parent="Furniture/ConsoleTable"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.55, 0.4, -0.12)
+size = Vector3(0.05, 0.8, 0.05)
+material = SubResource("Mat_DarkWood")
+
+[node name="Leg4" type="CSGBox3D" parent="Furniture/ConsoleTable"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.55, 0.4, -0.12)
+size = Vector3(0.05, 0.8, 0.05)
+material = SubResource("Mat_DarkWood")
+
+; --- Coat Rack (Hallway) ---
+[node name="CoatRack" type="StaticBody3D" parent="Furniture"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 0, 2)
+
+[node name="Pole" type="CSGCylinder3D" parent="Furniture/CoatRack"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+radius = 0.04
+height = 1.8
+material = SubResource("Mat_DarkWood")
+use_collision = true
+
+[node name="Base" type="CSGCylinder3D" parent="Furniture/CoatRack"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.03, 0)
+radius = 0.3
+height = 0.06
+material = SubResource("Mat_DarkWood")
+
+[node name="Hook1" type="CSGBox3D" parent="Furniture/CoatRack"]
+transform = Transform3D(0.707, 0, 0.707, 0, 1, 0, -0.707, 0, 0.707, 0.1, 1.7, 0.1)
+size = Vector3(0.15, 0.04, 0.04)
+material = SubResource("Mat_DarkWood")
+
+[node name="Hook2" type="CSGBox3D" parent="Furniture/CoatRack"]
+transform = Transform3D(0.707, 0, -0.707, 0, 1, 0, 0.707, 0, 0.707, -0.1, 1.7, 0.1)
+size = Vector3(0.15, 0.04, 0.04)
+material = SubResource("Mat_DarkWood")
+
+[node name="Hook3" type="CSGBox3D" parent="Furniture/CoatRack"]
+transform = Transform3D(0.707, 0, 0.707, 0, 1, 0, -0.707, 0, 0.707, 0.1, 1.7, -0.1)
+size = Vector3(0.15, 0.04, 0.04)
+material = SubResource("Mat_DarkWood")
+
+[node name="Hook4" type="CSGBox3D" parent="Furniture/CoatRack"]
+transform = Transform3D(0.707, 0, -0.707, 0, 1, 0, 0.707, 0, 0.707, -0.1, 1.7, -0.1)
+size = Vector3(0.15, 0.04, 0.04)
+material = SubResource("Mat_DarkWood")
+
+; --- Shoe Rack (Hallway) ---
+[node name="ShoeRack" type="StaticBody3D" parent="Furniture"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0, 2)
+
+[node name="Frame" type="CSGBox3D" parent="Furniture/ShoeRack"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+size = Vector3(0.8, 0.5, 0.35)
+material = SubResource("Mat_LightWood")
+use_collision = true
+
+[node name="Shelf1" type="CSGBox3D" parent="Furniture/ShoeRack"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.15, 0)
+size = Vector3(0.75, 0.02, 0.32)
+material = SubResource("Mat_LightWood")
+
+[node name="Shelf2" type="CSGBox3D" parent="Furniture/ShoeRack"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, 0)
+size = Vector3(0.75, 0.02, 0.32)
+material = SubResource("Mat_LightWood")
+
 ; ============================================================
-; CURTAINS (interactive - cat can pull them down!)
-; ============================================================
-[node name="Curtains" type="Node3D" parent="."]
-
-; --- South Window 1 Curtain (Living Room) ---
-[node name="SouthCurtain1" type="Node3D" parent="Curtains"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 10.8)
-script = ExtResource("9_curtain")
-pull_down_points = 50
-
-[node name="CurtainMesh" type="MeshInstance3D" parent="Curtains/SouthCurtain1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, 0)
-mesh = SubResource("BoxMesh_curtain")
-
-[node name="Rod" type="RigidBody3D" parent="Curtains/SouthCurtain1"]
-transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 0, 2.85, 0)
-freeze = true
-
-[node name="RodMesh" type="MeshInstance3D" parent="Curtains/SouthCurtain1/Rod"]
-mesh = SubResource("CylinderMesh_rod")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Curtains/SouthCurtain1/Rod"]
-transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 0, 0, 0)
-shape = SubResource("BoxShape3D_rod")
-
-[node name="GrabArea" type="Area3D" parent="Curtains/SouthCurtain1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Curtains/SouthCurtain1/GrabArea"]
-shape = SubResource("BoxShape3D_curtain_grab")
-
-; --- South Window 2 Curtain (Kitchen) ---
-[node name="SouthCurtain2" type="Node3D" parent="Curtains"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, 10.8)
-script = ExtResource("9_curtain")
-pull_down_points = 50
-
-[node name="CurtainMesh" type="MeshInstance3D" parent="Curtains/SouthCurtain2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, 0)
-mesh = SubResource("BoxMesh_curtain")
-
-[node name="Rod" type="RigidBody3D" parent="Curtains/SouthCurtain2"]
-transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 0, 2.85, 0)
-freeze = true
-
-[node name="RodMesh" type="MeshInstance3D" parent="Curtains/SouthCurtain2/Rod"]
-mesh = SubResource("CylinderMesh_rod")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Curtains/SouthCurtain2/Rod"]
-transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 0, 0, 0)
-shape = SubResource("BoxShape3D_rod")
-
-[node name="GrabArea" type="Area3D" parent="Curtains/SouthCurtain2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Curtains/SouthCurtain2/GrabArea"]
-shape = SubResource("BoxShape3D_curtain_grab")
-
-; --- North Window 1 Curtain (Bedroom) ---
-[node name="NorthCurtain1" type="Node3D" parent="Curtains"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, -10.8)
-script = ExtResource("9_curtain")
-pull_down_points = 50
-
-[node name="CurtainMesh" type="MeshInstance3D" parent="Curtains/NorthCurtain1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, 0)
-mesh = SubResource("BoxMesh_curtain")
-
-[node name="Rod" type="RigidBody3D" parent="Curtains/NorthCurtain1"]
-transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 0, 2.85, 0)
-freeze = true
-
-[node name="RodMesh" type="MeshInstance3D" parent="Curtains/NorthCurtain1/Rod"]
-mesh = SubResource("CylinderMesh_rod")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Curtains/NorthCurtain1/Rod"]
-transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 0, 0, 0)
-shape = SubResource("BoxShape3D_rod")
-
-[node name="GrabArea" type="Area3D" parent="Curtains/NorthCurtain1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Curtains/NorthCurtain1/GrabArea"]
-shape = SubResource("BoxShape3D_curtain_grab")
-
-; ============================================================
-; SCRATCHABLE SURFACES (cat can scratch furniture!)
-; ============================================================
-[node name="ScratchableSurfaces" type="Node3D" parent="."]
-
-; --- Couch is scratchable ---
-[node name="CouchScratch" type="Area3D" parent="ScratchableSurfaces"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0.3, 9.5)
-collision_layer = 2
-script = ExtResource("10_scratch")
-surface_name = "Couch"
-scratch_points = 15
-max_scratch_level = 3
-scratch_time = 2.0
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="ScratchableSurfaces/CouchScratch"]
-shape = SubResource("BoxShape3D_scratch")
-
-; --- Bookshelf is scratchable ---
-[node name="BookshelfScratch" type="Area3D" parent="ScratchableSurfaces"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.2, 0.5, 4)
-collision_layer = 2
-script = ExtResource("10_scratch")
-surface_name = "Bookshelf"
-scratch_points = 20
-max_scratch_level = 3
-scratch_time = 1.5
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="ScratchableSurfaces/BookshelfScratch"]
-shape = SubResource("BoxShape3D_scratch")
-
-; ============================================================
-; TOILET PAPER (bathroom - cat can unroll it!)
-; ============================================================
-[node name="ToiletPaperHolder" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18.5, 0.7, -8)
-script = ExtResource("11_tp")
-points_per_rotation = 20
-max_rotations = 10
-
-[node name="RollMesh" type="MeshInstance3D" parent="ToiletPaperHolder"]
-transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 0, 0, 0)
-mesh = SubResource("CylinderMesh_tp_roll")
-
-[node name="PaperTrail" type="Node3D" parent="ToiletPaperHolder"]
-
-[node name="InteractArea" type="Area3D" parent="ToiletPaperHolder"]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="ToiletPaperHolder/InteractArea"]
-shape = SubResource("BoxShape3D_tp_area")
-
-; ============================================================
-; INTERACTABLES (knockable objects)
+; INTERACTABLES
 ; ============================================================
 [node name="Interactables" type="Node3D" parent="."]
 
-; --- Coffee Mug on coffee table ---
+; --- Mugs on coffee table (living room) ---
 [node name="Mug1" type="RigidBody3D" parent="Interactables"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.3, 0.48, 7.8)
 collision_layer = 2
@@ -1074,7 +1162,6 @@ mesh = SubResource("CylinderMesh_mug")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Interactables/Mug1"]
 shape = SubResource("CylinderShape3D_mug")
 
-; --- Tea Mug on coffee table ---
 [node name="Mug2" type="RigidBody3D" parent="Interactables"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.7, 0.48, 7.7)
 collision_layer = 2
@@ -1089,7 +1176,7 @@ mesh = SubResource("CylinderMesh_mug")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Interactables/Mug2"]
 shape = SubResource("CylinderShape3D_mug")
 
-; --- Red Mug on dining table ---
+; --- Mug on dining table (kitchen) ---
 [node name="Mug3" type="RigidBody3D" parent="Interactables"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.3, 0.83, 7.1)
 collision_layer = 2
@@ -1099,27 +1186,26 @@ knock_points = 10
 break_points = 25
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Interactables/Mug3"]
-mesh = SubResource("CylinderMesh_mug_red")
+mesh = SubResource("CylinderMesh_mug")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Interactables/Mug3"]
 shape = SubResource("CylinderShape3D_mug")
 
-; --- Blue Mug on kitchen counter ---
-[node name="Mug4" type="RigidBody3D" parent="Interactables"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.8, 1.0, 5)
+; --- Trash can in kitchen ---
+[node name="TrashCan" type="RigidBody3D" parent="Interactables"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 0.25, 9.5)
 collision_layer = 2
-script = ExtResource("1_knock")
-object_name = "Blue Mug"
-knock_points = 10
-break_points = 25
+mass = 2.0
+script = ExtResource("2_trash")
+tip_points = 40
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Interactables/Mug4"]
-mesh = SubResource("CylinderMesh_mug_blue")
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Interactables/TrashCan"]
+mesh = SubResource("CylinderMesh_trash")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Interactables/Mug4"]
-shape = SubResource("CylinderShape3D_mug")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Interactables/TrashCan"]
+shape = SubResource("CylinderShape3D_trash")
 
-; --- Water Glass on nightstand ---
+; --- Mug on nightstand (bedroom) ---
 [node name="NightstandMug" type="RigidBody3D" parent="Interactables"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0.65, -9.5)
 collision_layer = 2
@@ -1134,84 +1220,12 @@ mesh = SubResource("CylinderMesh_mug")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Interactables/NightstandMug"]
 shape = SubResource("CylinderShape3D_mug")
 
-; --- Vase on bookshelf ---
-[node name="Vase1" type="RigidBody3D" parent="Interactables"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.4, 1.3, 4)
-collision_layer = 2
-script = ExtResource("1_knock")
-object_name = "Blue Vase"
-knock_points = 15
-break_points = 35
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Interactables/Vase1"]
-mesh = SubResource("CylinderMesh_vase")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Interactables/Vase1"]
-shape = SubResource("CylinderShape3D_vase")
-
-; --- Vase on dresser (bedroom) ---
-[node name="Vase2" type="RigidBody3D" parent="Interactables"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.2, 1.1, -6)
-collision_layer = 2
-script = ExtResource("1_knock")
-object_name = "Flower Vase"
-knock_points = 15
-break_points = 35
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Interactables/Vase2"]
-mesh = SubResource("CylinderMesh_vase")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Interactables/Vase2"]
-shape = SubResource("CylinderShape3D_vase")
-
-; --- Vase on bathroom sink ---
-[node name="Vase3" type="RigidBody3D" parent="Interactables"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18.2, 0.85, -5)
-collision_layer = 2
-script = ExtResource("1_knock")
-object_name = "Soap Dispenser"
-knock_points = 10
-break_points = 20
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Interactables/Vase3"]
-mesh = SubResource("CylinderMesh_vase")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Interactables/Vase3"]
-shape = SubResource("CylinderShape3D_vase")
-
-; --- Kitchen Trash Can ---
-[node name="TrashCan" type="RigidBody3D" parent="Interactables"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 0.25, 9.5)
-collision_layer = 2
-mass = 2.0
-script = ExtResource("2_trash")
-tip_points = 40
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Interactables/TrashCan"]
-mesh = SubResource("CylinderMesh_trash")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Interactables/TrashCan"]
-shape = SubResource("CylinderShape3D_trash")
-
-; --- Bathroom Trash Can ---
-[node name="TrashCan2" type="RigidBody3D" parent="Interactables"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17, 0.25, -4)
-collision_layer = 2
-mass = 1.5
-script = ExtResource("2_trash")
-tip_points = 30
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Interactables/TrashCan2"]
-mesh = SubResource("CylinderMesh_trash")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Interactables/TrashCan2"]
-shape = SubResource("CylinderShape3D_trash")
-
 ; ============================================================
 ; HIDING SPOTS
 ; ============================================================
 [node name="HidingSpots" type="Node3D" parent="."]
 
+; --- Under Couch (living room) ---
 [node name="UnderCouch" type="Area3D" parent="HidingSpots"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0.15, 9.5)
 script = ExtResource("3_hide")
@@ -1220,6 +1234,7 @@ spot_name = "Under Couch"
 [node name="CollisionShape3D" type="CollisionShape3D" parent="HidingSpots/UnderCouch"]
 shape = SubResource("BoxShape3D_hide_couch")
 
+; --- Under Bed (bedroom) ---
 [node name="UnderBed" type="Area3D" parent="HidingSpots"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0.15, -9)
 script = ExtResource("3_hide")
@@ -1276,3 +1291,13 @@ omni_range = 5.0
 ; NAVIGATION
 ; ============================================================
 [node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
+
+; ============================================================
+; OWNER AI WITH PATROL PATH
+; ============================================================
+[node name="PatrolPath" type="Path3D" parent="."]
+curve = SubResource("Curve3D_patrol")
+
+[node name="Owner" parent="." instance=ExtResource("4_owner")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 7)
+patrol_path = NodePath("../PatrolPath")

@@ -1,0 +1,55 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="PackedScene" path="res://owner/owner.glb" id="1_4hg47"]
+[ext_resource type="AnimationLibrary" path="res://owner/Character_AnimationLibrary.tres" id="2_5arme"]
+[ext_resource type="BehaviorTree" path="res://owner/npc_idle.tres" id="3_advhu"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_oirxb"]
+radius = 0.4
+height = 1.8
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_m2ikf"]
+animation = &"default/Idle"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_pr40h"]
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_l4llo"]
+states/Idle/node = SubResource("AnimationNodeAnimation_m2ikf")
+states/Idle/position = Vector2(300, 100)
+transitions = ["Start", "Idle", SubResource("AnimationNodeStateMachineTransition_pr40h")]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_kpuix"]
+radius = 10.0
+
+[node name="NPC" type="CharacterBody3D"]
+metadata/npc_type = "friendly"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_oirxb")
+
+[node name="Visuals" type="Node3D" parent="."]
+
+[node name="CharacterMesh" type="Node3D" parent="Visuals" instance=ExtResource("1_4hg47")]
+unique_name_in_owner = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Visuals"]
+root_node = NodePath("../CharacterMesh")
+libraries = {
+&"default": ExtResource("2_5arme")
+}
+
+[node name="AnimationTree" type="AnimationTree" parent="Visuals"]
+root_node = NodePath("%CharacterMesh")
+tree_root = SubResource("AnimationNodeStateMachine_l4llo")
+anim_player = NodePath("../AnimationPlayer")
+
+[node name="BTPlayer" type="BTPlayer" parent="."]
+behavior_tree = ExtResource("3_advhu")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+
+[node name="DetectionArea" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DetectionArea"]
+shape = SubResource("SphereShape3D_kpuix")

@@ -6,11 +6,11 @@
 [ext_resource type="Script" path="res://player/animation_controller.gd" id="4_gskgj"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_06mnu"]
-radius = 0.12
-height = 0.28
+radius = 0.2
+height = 0.4
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_swipe"]
-radius = 0.35
+radius = 0.6
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_mhpjh"]
 animation = &"default/Jump"
@@ -94,17 +94,19 @@ states/Walk/node = SubResource("AnimationNodeAnimation_d4g0h")
 states/Walk/position = Vector2(550, 0)
 transitions = ["Idle", "Walk", SubResource("AnimationNodeStateMachineTransition_v4f8b"), "Walk", "Idle", SubResource("AnimationNodeStateMachineTransition_t8epa"), "Walk", "Run", SubResource("AnimationNodeStateMachineTransition_w24id"), "Run", "Walk", SubResource("AnimationNodeStateMachineTransition_uewl2"), "Idle", "Jump", SubResource("AnimationNodeStateMachineTransition_ofhxi"), "Walk", "Jump", SubResource("AnimationNodeStateMachineTransition_yu5hk"), "Run", "Jump", SubResource("AnimationNodeStateMachineTransition_q6miu"), "Idle", "Fall", SubResource("AnimationNodeStateMachineTransition_mlfor"), "Walk", "Fall", SubResource("AnimationNodeStateMachineTransition_2m0d2"), "Run", "Fall", SubResource("AnimationNodeStateMachineTransition_8nth8"), "Run", "Idle", SubResource("AnimationNodeStateMachineTransition_8tqfn"), "Jump", "Fall", SubResource("AnimationNodeStateMachineTransition_stbqk"), "Fall", "Land", SubResource("AnimationNodeStateMachineTransition_y617q"), "Land", "Fall", SubResource("AnimationNodeStateMachineTransition_8eyfg"), "Land", "Idle", SubResource("AnimationNodeStateMachineTransition_76mgg"), "Start", "Idle", SubResource("AnimationNodeStateMachineTransition_ddnt4")]
 
-[node name="Player" type="CharacterBody3D"]
+[node name="Player2_Tabby" type="CharacterBody3D"]
 collision_layer = 4
 collision_mask = 3
 script = ExtResource("1_83hs8")
+player_id = 2
+input_prefix = "p2_"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.14, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
 shape = SubResource("CapsuleShape3D_06mnu")
 
 [node name="PawSwipeArea" type="Area3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0.25)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.15, 0.4)
 collision_layer = 0
 collision_mask = 2
 
@@ -112,7 +114,7 @@ collision_mask = 2
 shape = SubResource("SphereShape3D_swipe")
 
 [node name="Visuals" type="Node3D" parent="."]
-transform = Transform3D(-0.5, 0, -4.371139e-08, 0, 0.5, 0, 4.371139e-08, 0, -0.5, 0, 0, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 0)
 
 [node name="CharacterMesh" type="Node3D" parent="Visuals" instance=ExtResource("2_x8kxw")]
 unique_name_in_owner = true
