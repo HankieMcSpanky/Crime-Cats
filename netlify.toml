@@ -1,7 +1,5 @@
 [build]
   publish = "build/web"
-  # Build is handled by GitHub Actions, skip Netlify's build
-  ignore = "exit 0"
 
 [[headers]]
   for = "/*"

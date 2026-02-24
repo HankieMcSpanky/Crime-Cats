@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crime Cats - A Feline Heist Game</title>
+<meta name="description" content="Play as mischievous Bengal cats committing crimes around the house without the owner noticing. A 3D stealth game built in Godot.">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Space+Mono:wght@400;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg-dark: #0d0b14;
+    --bg-card: #1a1625;
+    --accent: #f5a623;
+    --accent2: #e8432f;
+    --text: #eee8d5;
+    --text-dim: #9a8f80;
+    --bengal-gold: #c8943e;
+    --bengal-dark: #3d2a12;
+  }
+
+  body {
+    background: var(--bg-dark);
+    color: var(--text);
+    font-family: 'Fredoka', sans-serif;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  /* === STARFIELD BACKGROUND === */
+  .stars {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: radial-gradient(ellipse at 20% 50%, #1a1430 0%, var(--bg-dark) 70%);
+    z-index: -1;
+  }
+  .stars::before, .stars::after {
+    content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background-image:
+      radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.3), transparent),
+      radial-gradient(1px 1px at 30% 60%, rgba(255,255,255,0.2), transparent),
+      radial-gradient(1px 1px at 50% 10%, rgba(255,255,255,0.25), transparent),
+      radial-gradient(1px 1px at 70% 80%, rgba(255,255,255,0.15), transparent),
+      radial-gradient(1px 1px at 90% 40%, rgba(255,255,255,0.3), transparent),
+      radial-gradient(1.5px 1.5px at 15% 85%, rgba(255,255,255,0.2), transparent),
+      radial-gradient(1px 1px at 85% 15%, rgba(255,255,255,0.25), transparent);
+  }
+
+  /* === HEADER === */
+  header {
+    text-align: center;
+    padding: 60px 20px 20px;
+    position: relative;
+  }
+  .title {
+    font-size: clamp(3rem, 8vw, 6rem);
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 50%, var(--accent) 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer 3s ease-in-out infinite;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    filter: drop-shadow(0 0 30px rgba(245, 166, 35, 0.3));
+  }
+  @keyframes shimmer {
+    0%, 100% { background-position: 0% center; }
+    50% { background-position: 200% center; }
+  }
+  .subtitle {
+    font-size: clamp(1rem, 3vw, 1.4rem);
+    color: var(--text-dim);
+    margin-top: 10px;
+    font-weight: 400;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+  }
+
+  /* === CAT STAGE === */
+  .cat-stage {
+    position: relative;
+    width: 100%;
+    max-width: 900px;
+    height: 220px;
+    margin: 20px auto;
+    overflow: hidden;
+  }
+
+  /* === ANIMATED BENGAL CAT SVG === */
+  .cat-container {
+    position: absolute;
+    bottom: 30px;
+    width: 160px;
+    height: 120px;
+  }
+  .cat-1 { left: 15%; animation: prowl1 8s ease-in-out infinite; }
+  .cat-2 { right: 15%; animation: prowl2 9s ease-in-out infinite 1s; }
+
+  @keyframes prowl1 {
+    0%, 100% { transform: translateX(0) translateY(0); }
+    25% { transform: translateX(40px) translateY(-5px); }
+    50% { transform: translateX(20px) translateY(0); }
+    75% { transform: translateX(-20px) translateY(-3px); }
+  }
+  @keyframes prowl2 {
+    0%, 100% { transform: translateX(0) translateY(0) scaleX(-1); }
+    25% { transform: translateX(-30px) translateY(-4px) scaleX(-1); }
+    50% { transform: translateX(-10px) translateY(0) scaleX(-1); }
+    75% { transform: translateX(25px) translateY(-6px) scaleX(-1); }
+  }
+
+  .cat-body { animation: bodyBob 0.6s ease-in-out infinite; }
+  @keyframes bodyBob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-2px); }
+  }
+
+  .cat-tail { transform-origin: 10% 80%; animation: tailWag 1.5s ease-in-out infinite; }
+  @keyframes tailWag {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(8deg); }
+    75% { transform: rotate(-5deg); }
+  }
+
+  .front-leg-l { transform-origin: 50% 0%; animation: legWalkF 0.6s ease-in-out infinite; }
+  .front-leg-r { transform-origin: 50% 0%; animation: legWalkF 0.6s ease-in-out infinite 0.3s; }
+  .back-leg-l { transform-origin: 50% 0%; animation: legWalkB 0.6s ease-in-out infinite 0.15s; }
+  .back-leg-r { transform-origin: 50% 0%; animation: legWalkB 0.6s ease-in-out infinite 0.45s; }
+
+  @keyframes legWalkF {
+    0%, 100% { transform: rotate(15deg); }
+    50% { transform: rotate(-15deg); }
+  }
+  @keyframes legWalkB {
+    0%, 100% { transform: rotate(-12deg); }
+    50% { transform: rotate(12deg); }
+  }
+
+  .cat-eyes { animation: blink 4s ease-in-out infinite; }
+  @keyframes blink {
+    0%, 44%, 50%, 100% { transform: scaleY(1); }
+    46%, 48% { transform: scaleY(0.1); }
+  }
+
+  /* === GROUND LINE === */
+  .ground-line {
+    position: absolute; bottom: 28px; left: 5%; right: 5%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent) 20%, var(--accent) 80%, transparent);
+    opacity: 0.3;
+  }
+
+  /* === PAW PRINTS === */
+  .paw-prints {
+    position: absolute; bottom: 8px; left: 0; right: 0;
+    display: flex; justify-content: center; gap: 40px;
+    opacity: 0.15;
+  }
+  .paw { font-size: 14px; color: var(--accent); }
+  .paw:nth-child(odd) { transform: rotate(-15deg); }
+  .paw:nth-child(even) { transform: rotate(15deg) translateY(-5px); }
+
+  /* === MAIN CONTENT === */
+  .content {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 20px 60px;
+  }
+
+  /* === ABOUT SECTION === */
+  .about {
+    text-align: center;
+    margin-bottom: 50px;
+    padding: 0 20px;
+  }
+  .about p {
+    font-size: clamp(1rem, 2.5vw, 1.25rem);
+    line-height: 1.8;
+    color: var(--text);
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  .highlight { color: var(--accent); font-weight: 600; }
+
+  /* === FEATURE CARDS === */
+  .features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 50px;
+  }
+  .feature-card {
+    background: var(--bg-card);
+    border: 1px solid rgba(245, 166, 35, 0.1);
+    border-radius: 16px;
+    padding: 30px;
+    transition: transform 0.3s, border-color 0.3s;
+  }
+  .feature-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(245, 166, 35, 0.3);
+  }
+  .feature-icon { font-size: 2rem; margin-bottom: 12px; }
+  .feature-card h3 {
+    font-size: 1.2rem; margin-bottom: 8px;
+    color: var(--accent);
+  }
+  .feature-card p {
+    color: var(--text-dim); font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  /* === CONTROLS === */
+  .controls {
+    background: var(--bg-card);
+    border: 1px solid rgba(245, 166, 35, 0.1);
+    border-radius: 16px;
+    padding: 40px;
+    margin-bottom: 50px;
+  }
+  .controls h2 {
+    font-size: 1.8rem; margin-bottom: 24px;
+    text-align: center; color: var(--accent);
+  }
+  .control-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+  }
+  .control-item {
+    display: flex; align-items: center; gap: 12px;
+  }
+  .key {
+    font-family: 'Space Mono', monospace;
+    background: rgba(245, 166, 35, 0.15);
+    border: 1px solid rgba(245, 166, 35, 0.3);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 0.85rem;
+    color: var(--accent);
+    white-space: nowrap;
+    min-width: 60px;
+    text-align: center;
+  }
+  .control-item span:last-child {
+    color: var(--text-dim);
+    font-size: 0.95rem;
+  }
+
+  /* === DOWNLOAD === */
+  .download {
+    text-align: center;
+    margin-bottom: 50px;
+  }
+  .download h2 {
+    font-size: 1.8rem; margin-bottom: 12px;
+    color: var(--accent);
+  }
+  .download p {
+    color: var(--text-dim); margin-bottom: 24px;
+    font-size: 1rem;
+  }
+  .btn-row {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 32px;
+    border-radius: 12px;
+    font-family: 'Fredoka', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+    border: none;
+  }
+  .btn:hover { transform: translateY(-2px); }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff;
+    box-shadow: 0 4px 20px rgba(245, 166, 35, 0.3);
+  }
+  .btn-primary:hover { box-shadow: 0 6px 30px rgba(245, 166, 35, 0.5); }
+  .btn-secondary {
+    background: rgba(245, 166, 35, 0.1);
+    color: var(--accent);
+    border: 1px solid rgba(245, 166, 35, 0.3);
+  }
+  .btn-secondary:hover { background: rgba(245, 166, 35, 0.2); }
+
+  /* === STATUS BADGE === */
+  .status {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  .badge {
+    display: inline-block;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    background: rgba(245, 166, 35, 0.15);
+    color: var(--accent);
+    border: 1px solid rgba(245, 166, 35, 0.2);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* === FOOTER === */
+  footer {
+    text-align: center;
+    padding: 30px 20px;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    border-top: 1px solid rgba(255,255,255,0.05);
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="stars"></div>
+
+<header>
+  <h1 class="title">Crime Cats</h1>
+  <p class="subtitle">A Feline Heist Game</p>
+</header>
+
+<!-- ANIMATED CATS -->
+<div class="cat-stage">
+  <!-- Cat 1 - walking right -->
+  <div class="cat-container cat-1">
+    <svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg">
+      <g class="cat-body">
+        <!-- Tail -->
+        <g class="cat-tail">
+          <path d="M20,58 Q5,45 8,30 Q10,22 15,25" fill="none" stroke="#c8943e" stroke-width="5" stroke-linecap="round"/>
+          <path d="M20,58 Q5,45 8,30 Q10,22 15,25" fill="none" stroke="#3d2a12" stroke-width="5" stroke-linecap="round" stroke-dasharray="4 8" opacity="0.6"/>
+        </g>
+        <!-- Body -->
+        <ellipse cx="70" cy="55" rx="38" ry="18" fill="#c8943e"/>
+        <!-- Bengal spots -->
+        <ellipse cx="55" cy="50" rx="5" ry="4" fill="#3d2a12" opacity="0.5"/>
+        <ellipse cx="68" cy="46" rx="4" ry="3" fill="#3d2a12" opacity="0.5"/>
+        <ellipse cx="80" cy="52" rx="5" ry="3.5" fill="#3d2a12" opacity="0.5"/>
+        <ellipse cx="62" cy="60" rx="4" ry="3" fill="#3d2a12" opacity="0.5"/>
+        <ellipse cx="75" cy="58" rx="3.5" ry="3" fill="#3d2a12" opacity="0.4"/>
+        <ellipse cx="48" cy="56" rx="3" ry="2.5" fill="#3d2a12" opacity="0.45"/>
+        <ellipse cx="88" cy="48" rx="3" ry="2" fill="#3d2a12" opacity="0.4"/>
+        <circle cx="58" cy="54" r="2" fill="#3d2a12" opacity="0.3"/>
+        <circle cx="72" cy="52" r="1.5" fill="#3d2a12" opacity="0.3"/>
+        <circle cx="84" cy="56" r="2" fill="#3d2a12" opacity="0.3"/>
+        <!-- Belly highlight -->
+        <ellipse cx="70" cy="62" rx="25" ry="6" fill="#dba94e" opacity="0.4"/>
+        <!-- Head -->
+        <circle cx="105" cy="42" r="16" fill="#c8943e"/>
+        <!-- Head spots -->
+        <path d="M97,36 Q100,32 103,36" fill="none" stroke="#3d2a12" stroke-width="1.5" opacity="0.5"/>
+        <path d="M107,34 Q110,30 113,34" fill="none" stroke="#3d2a12" stroke-width="1.5" opacity="0.5"/>
+        <!-- Ears -->
+        <polygon points="93,30 97,18 103,28" fill="#c8943e"/>
+        <polygon points="95,29 98,21 101,28" fill="#e8a0a0" opacity="0.5"/>
+        <polygon points="109,28 115,17 118,27" fill="#c8943e"/>
+        <polygon points="111,27 115,20 117,27" fill="#e8a0a0" opacity="0.5"/>
+        <!-- Face -->
+        <g class="cat-eyes">
+          <ellipse cx="100" cy="41" rx="3.5" ry="4" fill="#2d8a4e"/>
+          <ellipse cx="112" cy="41" rx="3.5" ry="4" fill="#2d8a4e"/>
+          <ellipse cx="100" cy="41" rx="1.8" ry="3.5" fill="#111"/>
+          <ellipse cx="112" cy="41" rx="1.8" ry="3.5" fill="#111"/>
+          <circle cx="101.5" cy="39.5" r="1" fill="white" opacity="0.7"/>
+          <circle cx="113.5" cy="39.5" r="1" fill="white" opacity="0.7"/>
+        </g>
+        <!-- Nose + mouth -->
+        <ellipse cx="106" cy="47" rx="2.5" ry="1.5" fill="#e8a0a0"/>
+        <path d="M106,48.5 L104,51 M106,48.5 L108,51" fill="none" stroke="#3d2a12" stroke-width="0.8" opacity="0.5"/>
+        <!-- Whiskers -->
+        <line x1="95" y1="46" x2="82" y2="43" stroke="white" stroke-width="0.5" opacity="0.6"/>
+        <line x1="95" y1="48" x2="82" y2="48" stroke="white" stroke-width="0.5" opacity="0.6"/>
+        <line x1="117" y1="46" x2="130" y2="43" stroke="white" stroke-width="0.5" opacity="0.6"/>
+        <line x1="117" y1="48" x2="130" y2="48" stroke="white" stroke-width="0.5" opacity="0.6"/>
+        <!-- White chin -->
+        <ellipse cx="106" cy="52" rx="6" ry="4" fill="white" opacity="0.3"/>
+        <!-- Legs -->
+        <g class="front-leg-r">
+          <rect x="92" y="68" width="6" height="22" rx="3" fill="#c8943e"/>
+          <ellipse cx="95" cy="90" rx="4.5" ry="2.5" fill="#dba94e"/>
+        </g>
+        <g class="front-leg-l">
+          <rect x="100" y="68" width="6" height="22" rx="3" fill="#b8842e"/>
+          <ellipse cx="103" cy="90" rx="4.5" ry="2.5" fill="#c89840"/>
+        </g>
+        <g class="back-leg-r">
+          <rect x="42" y="66" width="7" height="24" rx="3.5" fill="#c8943e"/>
+          <ellipse cx="45.5" cy="90" rx="5" ry="2.5" fill="#dba94e"/>
+        </g>
+        <g class="back-leg-l">
+          <rect x="51" y="66" width="7" height="24" rx="3.5" fill="#b8842e"/>
+          <ellipse cx="54.5" cy="90" rx="5" ry="2.5" fill="#c89840"/>
+        </g>
+      </g>
+    </svg>
+  </div>
+
+  <!-- Cat 2 - walking left (mirrored via CSS scaleX) -->
+  <div class="cat-container cat-2">
+    <svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg">
+      <g class="cat-body">
+        <g class="cat-tail">
+          <path d="M20,58 Q5,45 8,30 Q10,22 15,25" fill="none" stroke="#d4a050" stroke-width="5" stroke-linecap="round"/>
+          <path d="M20,58 Q5,45 8,30 Q10,22 15,25" fill="none" stroke="#4a3015" stroke-width="5" stroke-linecap="round" stroke-dasharray="4 8" opacity="0.6"/>
+        </g>
+        <ellipse cx="70" cy="55" rx="38" ry="18" fill="#d4a050"/>
+        <ellipse cx="55" cy="50" rx="5" ry="4" fill="#4a3015" opacity="0.5"/>
+        <ellipse cx="68" cy="46" rx="4" ry="3" fill="#4a3015" opacity="0.5"/>
+        <ellipse cx="80" cy="52" rx="5" ry="3.5" fill="#4a3015" opacity="0.5"/>
+        <ellipse cx="62" cy="60" rx="4" ry="3" fill="#4a3015" opacity="0.5"/>
+        <ellipse cx="75" cy="58" rx="3.5" ry="3" fill="#4a3015" opacity="0.4"/>
+        <ellipse cx="48" cy="56" rx="3" ry="2.5" fill="#4a3015" opacity="0.45"/>
+        <ellipse cx="88" cy="48" rx="3" ry="2" fill="#4a3015" opacity="0.4"/>
+        <circle cx="58" cy="54" r="2" fill="#4a3015" opacity="0.3"/>
+        <circle cx="84" cy="56" r="2" fill="#4a3015" opacity="0.3"/>
+        <ellipse cx="70" cy="62" rx="25" ry="6" fill="#e0b560" opacity="0.4"/>
+        <circle cx="105" cy="42" r="16" fill="#d4a050"/>
+        <path d="M97,36 Q100,32 103,36" fill="none" stroke="#4a3015" stroke-width="1.5" opacity="0.5"/>
+        <path d="M107,34 Q110,30 113,34" fill="none" stroke="#4a3015" stroke-width="1.5" opacity="0.5"/>
+        <polygon points="93,30 97,18 103,28" fill="#d4a050"/>
+        <polygon points="95,29 98,21 101,28" fill="#e8a0a0" opacity="0.5"/>
+        <polygon points="109,28 115,17 118,27" fill="#d4a050"/>
+        <polygon points="111,27 115,20 117,27" fill="#e8a0a0" opacity="0.5"/>
+        <g class="cat-eyes">
+          <ellipse cx="100" cy="41" rx="3.5" ry="4" fill="#2d8a4e"/>
+          <ellipse cx="112" cy="41" rx="3.5" ry="4" fill="#2d8a4e"/>
+          <ellipse cx="100" cy="41" rx="1.8" ry="3.5" fill="#111"/>
+          <ellipse cx="112" cy="41" rx="1.8" ry="3.5" fill="#111"/>
+          <circle cx="101.5" cy="39.5" r="1" fill="white" opacity="0.7"/>
+          <circle cx="113.5" cy="39.5" r="1" fill="white" opacity="0.7"/>
+        </g>
+        <ellipse cx="106" cy="47" rx="2.5" ry="1.5" fill="#e8a0a0"/>
+        <path d="M106,48.5 L104,51 M106,48.5 L108,51" fill="none" stroke="#4a3015" stroke-width="0.8" opacity="0.5"/>
+        <line x1="95" y1="46" x2="82" y2="43" stroke="white" stroke-width="0.5" opacity="0.6"/>
+        <line x1="95" y1="48" x2="82" y2="48" stroke="white" stroke-width="0.5" opacity="0.6"/>
+        <line x1="117" y1="46" x2="130" y2="43" stroke="white" stroke-width="0.5" opacity="0.6"/>
+        <line x1="117" y1="48" x2="130" y2="48" stroke="white" stroke-width="0.5" opacity="0.6"/>
+        <ellipse cx="106" cy="52" rx="6" ry="4" fill="white" opacity="0.3"/>
+        <g class="front-leg-r">
+          <rect x="92" y="68" width="6" height="22" rx="3" fill="#d4a050"/>
+          <ellipse cx="95" cy="90" rx="4.5" ry="2.5" fill="#e0b560"/>
+        </g>
+        <g class="front-leg-l">
+          <rect x="100" y="68" width="6" height="22" rx="3" fill="#c09040"/>
+          <ellipse cx="103" cy="90" rx="4.5" ry="2.5" fill="#d0a048"/>
+        </g>
+        <g class="back-leg-r">
+          <rect x="42" y="66" width="7" height="24" rx="3.5" fill="#d4a050"/>
+          <ellipse cx="45.5" cy="90" rx="5" ry="2.5" fill="#e0b560"/>
+        </g>
+        <g class="back-leg-l">
+          <rect x="51" y="66" width="7" height="24" rx="3.5" fill="#c09040"/>
+          <ellipse cx="54.5" cy="90" rx="5" ry="2.5" fill="#d0a048"/>
+        </g>
+      </g>
+    </svg>
+  </div>
+
+  <div class="ground-line"></div>
+  <div class="paw-prints">
+    <span class="paw">&#128062;</span>
+    <span class="paw">&#128062;</span>
+    <span class="paw">&#128062;</span>
+    <span class="paw">&#128062;</span>
+    <span class="paw">&#128062;</span>
+    <span class="paw">&#128062;</span>
+    <span class="paw">&#128062;</span>
+    <span class="paw">&#128062;</span>
+    <span class="paw">&#128062;</span>
+  </div>
+</div>
+
+<div class="content">
+  <div class="status">
+    <span class="badge">Early Development</span>
+  </div>
+
+  <div class="about">
+    <p>
+      Play as <span class="highlight">mischievous Bengal cats</span> on a mission to cause chaos around the house &mdash;
+      knock things off tables, scratch the furniture, shred the toilet paper &mdash; all while
+      <span class="highlight">avoiding the owner's watchful eye</span>.
+      Go solo or team up in <span class="highlight">local co-op</span> for double the trouble.
+    </p>
+  </div>
+
+  <div class="features">
+    <div class="feature-card">
+      <div class="feature-icon">&#128008;</div>
+      <h3>Be the Cat</h3>
+      <p>Walk, run, jump, and pounce on 4 legs. Swipe objects off shelves with your paw. Carry items in your mouth and drop them where they don't belong.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">&#128065;</div>
+      <h3>Stealth Gameplay</h3>
+      <p>The owner patrols the house with a vision cone. Stay out of sight, hide under furniture, and time your crimes carefully.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">&#127968;</div>
+      <h3>Destructible House</h3>
+      <p>5 fully furnished rooms — living room, kitchen, bedroom, bathroom, and hallway. Every object is a potential target for feline mischief.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">&#127918;</div>
+      <h3>Local Co-op</h3>
+      <p>Team up with a friend on the same keyboard. Player 1 uses WASD, Player 2 uses arrow keys. Coordinate your crimes for combo bonuses.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">&#11088;</div>
+      <h3>Score & Combos</h3>
+      <p>Earn points for every crime committed. Chain crimes together for combo multipliers. How high can you score before getting caught?</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">&#128171;</div>
+      <h3>Suspicion System</h3>
+      <p>The owner gets increasingly suspicious as crimes pile up. Push your luck — but get caught three times and it's game over.</p>
+    </div>
+  </div>
+
+  <div class="controls">
+    <h2>Controls</h2>
+    <div class="control-grid">
+      <div class="control-item"><span class="key">W A S D</span><span>Move</span></div>
+      <div class="control-item"><span class="key">Mouse</span><span>Look up / down</span></div>
+      <div class="control-item"><span class="key">Right Click</span><span>Paw swipe</span></div>
+      <div class="control-item"><span class="key">Space</span><span>Jump</span></div>
+      <div class="control-item"><span class="key">Shift</span><span>Sprint / Dash</span></div>
+      <div class="control-item"><span class="key">E</span><span>Pick up item</span></div>
+      <div class="control-item"><span class="key">Q</span><span>Drop item</span></div>
+      <div class="control-item"><span class="key">Esc</span><span>Free mouse</span></div>
+    </div>
+  </div>
+
+  <div class="download">
+    <h2>Download</h2>
+    <p>Crime Cats is in early development. Download the latest build to try it out.</p>
+    <div class="btn-row">
+      <a href="https://github.com/HankieMcSpanky/Crime-Cats/releases" class="btn btn-primary">
+        &#11015; Download for Windows
+      </a>
+      <a href="https://github.com/HankieMcSpanky/Crime-Cats" class="btn btn-secondary">
+        &#128187; Source Code
+      </a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>Crime Cats &copy; 2026 &mdash; Built with <a href="https://godotengine.org">Godot Engine</a> &mdash; <a href="https://github.com/HankieMcSpanky/Crime-Cats">GitHub</a></p>
+</footer>
+
+</body>
+</html>
