@@ -1,0 +1,92 @@
+[gd_scene load_steps=5 format=3]
+
+[sub_resource type="StandardMaterial3D" id="mat_walls"]
+albedo_color = Color(0.96, 0.96, 0.96, 1)
+roughness = 0.8
+
+[sub_resource type="StandardMaterial3D" id="mat_roof"]
+albedo_color = Color(0.4, 0.25, 0.2, 1)
+roughness = 0.7
+
+[sub_resource type="StandardMaterial3D" id="mat_door"]
+albedo_color = Color(0.5, 0.15, 0.1, 1)
+roughness = 0.6
+
+[sub_resource type="StandardMaterial3D" id="mat_window"]
+albedo_color = Color(0.6, 0.8, 1.0, 1)
+roughness = 0.1
+metallic = 0.2
+
+[node name="HouseColonial" type="Node3D"]
+
+[node name="Foundation" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.15, 0)
+use_collision = true
+size = Vector3(10, 0.3, 8)
+material = SubResource("mat_walls")
+
+[node name="FirstFloor" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, 0)
+use_collision = true
+size = Vector3(9.5, 3.0, 7.5)
+material = SubResource("mat_walls")
+
+[node name="SecondFloor" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.5, 0)
+use_collision = true
+size = Vector3(9.5, 2.5, 7.5)
+material = SubResource("mat_walls")
+
+[node name="Roof" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.5, 0.866, 0, -0.866, 0.5, 0, 6.5, -2.5)
+use_collision = true
+size = Vector3(10, 0.2, 5)
+material = SubResource("mat_roof")
+
+[node name="Roof2" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.5, -0.866, 0, 0.866, 0.5, 0, 6.5, 2.5)
+use_collision = true
+size = Vector3(10, 0.2, 5)
+material = SubResource("mat_roof")
+
+[node name="Door" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, -3.8)
+size = Vector3(1.2, 2.2, 0.1)
+material = SubResource("mat_door")
+
+[node name="Window1" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, 1.8, -3.8)
+size = Vector3(1.0, 1.2, 0.1)
+material = SubResource("mat_window")
+
+[node name="Window2" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, 1.8, -3.8)
+size = Vector3(1.0, 1.2, 0.1)
+material = SubResource("mat_window")
+
+[node name="Window3" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, 4.5, -3.8)
+size = Vector3(1.0, 1.2, 0.1)
+material = SubResource("mat_window")
+
+[node name="Window4" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.5, -3.8)
+size = Vector3(1.0, 1.2, 0.1)
+material = SubResource("mat_window")
+
+[node name="Window5" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, 4.5, -3.8)
+size = Vector3(1.0, 1.2, 0.1)
+material = SubResource("mat_window")
+
+[node name="Chimney" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 7, 0)
+use_collision = true
+size = Vector3(1.0, 2.5, 1.0)
+material = SubResource("mat_roof")
+
+[node name="Porch" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, -5)
+use_collision = true
+size = Vector3(4, 0.3, 2)
+material = SubResource("mat_walls")

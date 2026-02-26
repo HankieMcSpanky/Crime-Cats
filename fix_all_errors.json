@@ -1,0 +1,125 @@
+{
+	"errors": [],
+	"warnings": [
+		{
+			"message": "load: res://house.tscn:3 - ext_resource, invalid UID: uid://sofa001 - using text path instead: res://assets/models/sectional_sofa.glb",
+			"source_file": "scene\\resources\\resource_format_text.cpp",
+			"source_line": 456
+		},
+		{
+			"message": "load: res://house.tscn:4 - ext_resource, invalid UID: uid://coffee001 - using text path instead: res://assets/models/coffee_table.glb",
+			"source_file": "scene\\resources\\resource_format_text.cpp",
+			"source_line": 456
+		},
+		{
+			"message": "load: res://house.tscn:5 - ext_resource, invalid UID: uid://tvconsole001 - using text path instead: res://assets/models/tv_console.glb",
+			"source_file": "scene\\resources\\resource_format_text.cpp",
+			"source_line": 456
+		},
+		{
+			"message": "load: res://house.tscn:6 - ext_resource, invalid UID: uid://tv001 - using text path instead: res://assets/models/tv.glb",
+			"source_file": "scene\\resources\\resource_format_text.cpp",
+			"source_line": 456
+		},
+		{
+			"message": "load: res://house.tscn:7 - ext_resource, invalid UID: uid://dining_table001 - using text path instead: res://assets/models/dining_table.glb",
+			"source_file": "scene\\resources\\resource_format_text.cpp",
+			"source_line": 456
+		},
+		{
+			"message": "load: res://house.tscn:8 - ext_resource, invalid UID: uid://dining_chair001 - using text path instead: res://assets/models/dining_chair.glb",
+			"source_file": "scene\\resources\\resource_format_text.cpp",
+			"source_line": 456
+		},
+		{
+			"message": "load: res://house.tscn:9 - ext_resource, invalid UID: uid://queen_bed001 - using text path instead: res://assets/models/queen_bed.glb",
+			"source_file": "scene\\resources\\resource_format_text.cpp",
+			"source_line": 456
+		},
+		{
+			"message": "load: res://house.tscn:10 - ext_resource, invalid UID: uid://nightstand001 - using text path instead: res://assets/models/nightstand.glb",
+			"source_file": "scene\\resources\\resource_format_text.cpp",
+			"source_line": 456
+		},
+		{
+			"message": "load: res://house.tscn:11 - ext_resource, invalid UID: uid://kitchen_island001 - using text path instead: res://assets/models/kitchen_island.glb",
+			"source_file": "scene\\resources\\resource_format_text.cpp",
+			"source_line": 456
+		},
+		{
+			"message": "load: res://house.tscn:12 - ext_resource, invalid UID: uid://refrigerator001 - using text path instead: res://assets/models/refrigerator.glb",
+			"source_file": "scene\\resources\\resource_format_text.cpp",
+			"source_line": 456
+		},
+		{
+			"message": "load: res://house.tscn:13 - ext_resource, invalid UID: uid://office_desk001 - using text path instead: res://assets/models/office_desk.glb",
+			"source_file": "scene\\resources\\resource_format_text.cpp",
+			"source_line": 456
+		},
+		{
+			"message": "load: res://house.tscn:14 - ext_resource, invalid UID: uid://office_chair001 - using text path instead: res://assets/models/office_chair.glb",
+			"source_file": "scene\\resources\\resource_format_text.cpp",
+			"source_line": 456
+		},
+		{
+			"message": "load: res://house.tscn:15 - ext_resource, invalid UID: uid://bathroom_vanity001 - using text path instead: res://assets/models/bathroom_vanity.glb",
+			"source_file": "scene\\resources\\resource_format_text.cpp",
+			"source_line": 456
+		},
+		{
+			"message": "load: res://house.tscn:16 - ext_resource, invalid UID: uid://toilet001 - using text path instead: res://assets/models/toilet.glb",
+			"source_file": "scene\\resources\\resource_format_text.cpp",
+			"source_line": 456
+		},
+		{
+			"message": "load: res://house.tscn:17 - ext_resource, invalid UID: uid://bathtub001 - using text path instead: res://assets/models/bathtub.glb",
+			"source_file": "scene\\resources\\resource_format_text.cpp",
+			"source_line": 456
+		},
+		{
+			"message": "load: res://house.tscn:18 - ext_resource, invalid UID: uid://bookshelf001 - using text path instead: res://assets/models/bookshelf.glb",
+			"source_file": "scene\\resources\\resource_format_text.cpp",
+			"source_line": 456
+		},
+		{
+			"message": "load: res://house.tscn:19 - ext_resource, invalid UID: uid://armchair001 - using text path instead: res://assets/models/armchair.glb",
+			"source_file": "scene\\resources\\resource_format_text.cpp",
+			"source_line": 456
+		},
+		{
+			"message": "load: res://house.tscn:20 - ext_resource, invalid UID: uid://floor_lamp001 - using text path instead: res://assets/models/floor_lamp.glb",
+			"source_file": "scene\\resources\\resource_format_text.cpp",
+			"source_line": 456
+		},
+		{
+			"message": "load: res://house.tscn:21 - ext_resource, invalid UID: uid://kitchen_counter001 - using text path instead: res://assets/models/kitchen_counter.glb",
+			"source_file": "scene\\resources\\resource_format_text.cpp",
+			"source_line": 456
+		},
+		{
+			"message": "load: res://house.tscn:22 - ext_resource, invalid UID: uid://stove001 - using text path instead: res://assets/models/stove.glb",
+			"source_file": "scene\\resources\\resource_format_text.cpp",
+			"source_line": 456
+		},
+		{
+			"message": "load: res://house.tscn:23 - ext_resource, invalid UID: uid://console_table001 - using text path instead: res://assets/models/console_table.glb",
+			"source_file": "scene\\resources\\resource_format_text.cpp",
+			"source_line": 456
+		},
+		{
+			"message": "load: res://house.tscn:24 - ext_resource, invalid UID: uid://area_rug001 - using text path instead: res://assets/models/area_rug.glb",
+			"source_file": "scene\\resources\\resource_format_text.cpp",
+			"source_line": 456
+		},
+		{
+			"message": "load: res://house.tscn:25 - ext_resource, invalid UID: uid://potted_plant001 - using text path instead: res://assets/models/potted_plant.glb",
+			"source_file": "scene\\resources\\resource_format_text.cpp",
+			"source_line": 456
+		},
+		{
+			"message": "load: res://house.tscn:26 - ext_resource, invalid UID: uid://single_bed001 - using text path instead: res://assets/models/single_bed.glb",
+			"source_file": "scene\\resources\\resource_format_text.cpp",
+			"source_line": 456
+		}
+	]
+}

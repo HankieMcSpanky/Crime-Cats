@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3 uid="uid://game_camera_001"]
+
+[ext_resource type="Script" path="res://camera/orbit_camera.gd" id="1_camera"]
+
+[node name="GameCamera" type="Camera3D"]
+script = ExtResource("1_camera")
+distance = 2.5
+height_offset = 0.8
+target_offset = Vector3(0, 0.3, 0)
+mouse_sensitivity = 0.002
+pitch_min_degrees = -50.0
+pitch_max_degrees = 45.0
+follow_smoothing = 10.0
+rotation_smoothing = 12.0

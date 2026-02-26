@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/knockable_object.gd" id="1_knockable"]
+[ext_resource type="PackedScene" uid="uid://vcgq1vcid7ym" path="res://assets/models/glass_cup.glb" id="2_mesh"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_1"]
+size = Vector3(0.08, 0.1, 0.08)
+
+[node name="KnockableGlass" type="RigidBody3D"]
+mass = 0.15
+script = ExtResource("1_knockable")
+knock_force = 2.5
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
+shape = SubResource("BoxShape3D_1")
+
+[node name="Mesh" parent="." instance=ExtResource("2_mesh")]

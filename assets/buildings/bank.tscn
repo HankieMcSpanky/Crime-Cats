@@ -1,0 +1,177 @@
+[gd_scene load_steps=9 format=3]
+
+[sub_resource type="StandardMaterial3D" id="mat_stone"]
+albedo_color = Color(0.85, 0.82, 0.78, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="mat_columns"]
+albedo_color = Color(0.95, 0.93, 0.9, 1)
+roughness = 0.7
+
+[sub_resource type="StandardMaterial3D" id="mat_roof"]
+albedo_color = Color(0.3, 0.35, 0.4, 1)
+roughness = 0.5
+
+[sub_resource type="StandardMaterial3D" id="mat_door"]
+albedo_color = Color(0.15, 0.1, 0.05, 1)
+roughness = 0.4
+metallic = 0.2
+
+[sub_resource type="StandardMaterial3D" id="mat_floor"]
+albedo_color = Color(0.9, 0.88, 0.85, 1)
+roughness = 0.3
+metallic = 0.1
+
+[sub_resource type="StandardMaterial3D" id="mat_counter"]
+albedo_color = Color(0.4, 0.25, 0.15, 1)
+roughness = 0.5
+
+[sub_resource type="StandardMaterial3D" id="mat_vault"]
+albedo_color = Color(0.3, 0.3, 0.35, 1)
+roughness = 0.2
+metallic = 0.8
+
+[sub_resource type="BoxShape3D" id="entry_shape"]
+size = Vector3(4, 3, 2)
+
+[node name="Bank" type="Node3D"]
+
+[node name="Exterior" type="Node3D" parent="."]
+
+[node name="MainBuilding" type="CSGBox3D" parent="Exterior"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0)
+use_collision = true
+size = Vector3(18, 8, 14)
+material = SubResource("mat_stone")
+
+[node name="Steps1" type="CSGBox3D" parent="Exterior"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.15, -8)
+use_collision = true
+size = Vector3(12, 0.3, 2)
+material = SubResource("mat_stone")
+
+[node name="Steps2" type="CSGBox3D" parent="Exterior"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -8.5)
+use_collision = true
+size = Vector3(10, 0.3, 1)
+material = SubResource("mat_stone")
+
+[node name="Column1" type="CSGCylinder3D" parent="Exterior"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 4, -7.2)
+use_collision = true
+radius = 0.5
+height = 7
+material = SubResource("mat_columns")
+
+[node name="Column2" type="CSGCylinder3D" parent="Exterior"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 4, -7.2)
+use_collision = true
+radius = 0.5
+height = 7
+material = SubResource("mat_columns")
+
+[node name="Column3" type="CSGCylinder3D" parent="Exterior"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 4, -7.2)
+use_collision = true
+radius = 0.5
+height = 7
+material = SubResource("mat_columns")
+
+[node name="Column4" type="CSGCylinder3D" parent="Exterior"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 4, -7.2)
+use_collision = true
+radius = 0.5
+height = 7
+material = SubResource("mat_columns")
+
+[node name="Pediment" type="CSGBox3D" parent="Exterior"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.8, -7.2)
+use_collision = true
+size = Vector3(12, 0.6, 2)
+material = SubResource("mat_columns")
+
+[node name="Roof" type="CSGBox3D" parent="Exterior"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.2, 0)
+use_collision = true
+size = Vector3(19, 0.4, 15)
+material = SubResource("mat_roof")
+
+[node name="Sign" type="CSGBox3D" parent="Exterior"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.5, -7.1)
+size = Vector3(6, 1, 0.2)
+material = SubResource("mat_door")
+
+[node name="Interior" type="Node3D" parent="."]
+
+[node name="Floor" type="CSGBox3D" parent="Interior"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
+use_collision = true
+size = Vector3(17, 0.1, 13)
+material = SubResource("mat_floor")
+
+[node name="TellerCounter" type="CSGBox3D" parent="Interior"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 3)
+use_collision = true
+size = Vector3(12, 1.2, 1)
+material = SubResource("mat_counter")
+
+[node name="TellerDivider1" type="CSGBox3D" parent="Interior"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 1.5, 3)
+use_collision = true
+size = Vector3(0.1, 1.8, 1)
+material = SubResource("mat_counter")
+
+[node name="TellerDivider2" type="CSGBox3D" parent="Interior"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 3)
+use_collision = true
+size = Vector3(0.1, 1.8, 1)
+material = SubResource("mat_counter")
+
+[node name="TellerDivider3" type="CSGBox3D" parent="Interior"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 1.5, 3)
+use_collision = true
+size = Vector3(0.1, 1.8, 1)
+material = SubResource("mat_counter")
+
+[node name="WaitingBench1" type="CSGBox3D" parent="Interior"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0.4, -3)
+use_collision = true
+size = Vector3(3, 0.5, 1)
+material = SubResource("mat_counter")
+
+[node name="WaitingBench2" type="CSGBox3D" parent="Interior"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0.4, -3)
+use_collision = true
+size = Vector3(3, 0.5, 1)
+material = SubResource("mat_counter")
+
+[node name="VaultDoor" type="CSGCylinder3D" parent="Interior"]
+transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 1.5, 6)
+use_collision = true
+radius = 1.2
+height = 0.3
+material = SubResource("mat_vault")
+
+[node name="VaultFrame" type="CSGBox3D" parent="Interior"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 6.2)
+use_collision = true
+size = Vector3(3, 3, 0.3)
+material = SubResource("mat_vault")
+
+[node name="Planter1" type="CSGCylinder3D" parent="Interior"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 0.4, -4)
+radius = 0.5
+height = 0.8
+material = SubResource("mat_counter")
+
+[node name="Planter2" type="CSGCylinder3D" parent="Interior"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 0.4, -4)
+radius = 0.5
+height = 0.8
+material = SubResource("mat_counter")
+
+[node name="EntryArea" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -8)
+
+[node name="EntryCollision" type="CollisionShape3D" parent="EntryArea"]
+shape = SubResource("entry_shape")

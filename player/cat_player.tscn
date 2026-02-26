@@ -1,0 +1,52 @@
+[gd_scene load_steps=7 format=3 uid="uid://cat_player_001"]
+
+[ext_resource type="Script" path="res://player/movement_controller.gd" id="1_movement"]
+[ext_resource type="PackedScene" uid="uid://chhc7epvh08hm" path="res://catspack_fbx/CatStray_Anim_IP.fbx" id="2_cat_model"]
+[ext_resource type="Script" path="res://player/cat_animation_controller.gd" id="3_cat_anim"]
+[ext_resource type="Script" path="res://player/cat_material_applier.gd" id="4_mat_applier"]
+[ext_resource type="Material" path="res://assets/materials/bengal_cat.tres" id="5_bengal_mat"]
+[ext_resource type="Script" path="res://scripts/cat_attack_hitbox.gd" id="6_attack_hitbox"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_1"]
+radius = 0.15
+height = 0.4
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_attack"]
+radius = 0.8
+
+[node name="CatPlayer" type="CharacterBody3D"]
+groups = ["player"]
+script = ExtResource("1_movement")
+visuals_path = NodePath("Visuals")
+animation_tree_path = NodePath("")
+animation_controller_path = NodePath("CatAnimationController")
+move_speed = 2.0
+sprint_speed = 5.0
+acceleration = 10.0
+jump_velocity = 4.0
+gravity = 20.0
+rotation_speed = 10.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
+shape = SubResource("CapsuleShape3D_1")
+
+[node name="Visuals" type="Node3D" parent="."]
+
+[node name="CatModel" parent="Visuals" instance=ExtResource("2_cat_model")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+
+[node name="CatAnimationController" type="Node" parent="."]
+script = ExtResource("3_cat_anim")
+animation_player_path = NodePath("../Visuals/CatModel/AnimationPlayer")
+
+[node name="MaterialApplier" type="Node" parent="Visuals"]
+script = ExtResource("4_mat_applier")
+material = ExtResource("5_bengal_mat")
+
+[node name="AttackHitbox" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0.3)
+script = ExtResource("6_attack_hitbox")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AttackHitbox"]
+shape = SubResource("SphereShape3D_attack")

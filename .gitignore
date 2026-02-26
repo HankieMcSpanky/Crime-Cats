@@ -1,0 +1,14 @@
+# Godot 4+ specific ignores
+.godot/
+/android/
+*.import
+
+# Large asset packs (stored locally, not in repo)
+# Cats Pack by Malbers Animations on CGTrader
+catspack_fbx/
+catspack_obj/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini

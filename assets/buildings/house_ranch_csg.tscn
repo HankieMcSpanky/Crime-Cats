@@ -1,0 +1,137 @@
+[gd_scene load_steps=6 format=3]
+
+[sub_resource type="StandardMaterial3D" id="mat_walls"]
+albedo_color = Color(0.82, 0.75, 0.62, 1)
+roughness = 0.8
+
+[sub_resource type="StandardMaterial3D" id="mat_roof"]
+albedo_color = Color(0.4, 0.28, 0.18, 1)
+roughness = 0.6
+
+[sub_resource type="StandardMaterial3D" id="mat_door"]
+albedo_color = Color(0.3, 0.18, 0.1, 1)
+roughness = 0.5
+
+[sub_resource type="StandardMaterial3D" id="mat_window"]
+albedo_color = Color(0.5, 0.7, 0.9, 1)
+roughness = 0.1
+metallic = 0.2
+
+[sub_resource type="StandardMaterial3D" id="mat_garage"]
+albedo_color = Color(0.92, 0.9, 0.88, 1)
+roughness = 0.4
+
+[node name="RanchHouse" type="StaticBody3D"]
+
+[node name="MainBody" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 1.75, 0)
+use_collision = true
+size = Vector3(8, 3.5, 8)
+material = SubResource("mat_walls")
+
+[node name="GarageBody" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 1.5, 0)
+use_collision = true
+size = Vector3(4, 3, 7)
+material = SubResource("mat_walls")
+
+[node name="RoofMain1" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.94, 0.342, 0, -0.342, 0.94, 2, 4.2, -2.5)
+size = Vector3(9, 0.2, 5)
+material = SubResource("mat_roof")
+
+[node name="RoofMain2" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.94, -0.342, 0, 0.342, 0.94, 2, 4.2, 2.5)
+size = Vector3(9, 0.2, 5)
+material = SubResource("mat_roof")
+
+[node name="RoofGarage1" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.94, 0.342, 0, -0.342, 0.94, -4, 3.7, -2)
+size = Vector3(5, 0.2, 4.2)
+material = SubResource("mat_roof")
+
+[node name="RoofGarage2" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.94, -0.342, 0, 0.342, 0.94, -4, 3.7, 2)
+size = Vector3(5, 0.2, 4.2)
+material = SubResource("mat_roof")
+
+[node name="GarageDoor" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 1.25, -3.52)
+size = Vector3(3.2, 2.3, 0.1)
+material = SubResource("mat_garage")
+
+[node name="GarageLine1" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0.5, -3.54)
+size = Vector3(3, 0.06, 0.05)
+material = SubResource("mat_walls")
+
+[node name="GarageLine2" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 1.1, -3.54)
+size = Vector3(3, 0.06, 0.05)
+material = SubResource("mat_walls")
+
+[node name="GarageLine3" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 1.7, -3.54)
+size = Vector3(3, 0.06, 0.05)
+material = SubResource("mat_walls")
+
+[node name="Door" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, -4.02)
+size = Vector3(1.1, 2.2, 0.1)
+material = SubResource("mat_door")
+
+[node name="PorchRoof" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.6, -4.8)
+size = Vector3(2.8, 0.12, 1.6)
+material = SubResource("mat_roof")
+
+[node name="PorchPillar1" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.1, 1.3, -5.4)
+size = Vector3(0.18, 2.6, 0.18)
+material = SubResource("mat_walls")
+
+[node name="PorchPillar2" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.1, 1.3, -5.4)
+size = Vector3(0.18, 2.6, 0.18)
+material = SubResource("mat_walls")
+
+[node name="WindowL" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2, 1.8, -4.02)
+size = Vector3(1.5, 1.2, 0.08)
+material = SubResource("mat_window")
+
+[node name="WindowR" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 1.8, -4.02)
+size = Vector3(1.8, 1.2, 0.08)
+material = SubResource("mat_window")
+
+[node name="WindowSide" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.02, 1.8, 0)
+size = Vector3(0.08, 1.2, 1.5)
+material = SubResource("mat_window")
+
+[node name="WindowFrameL1" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2, 1.8, -4.03)
+size = Vector3(1.6, 0.08, 0.05)
+material = SubResource("mat_walls")
+
+[node name="WindowFrameL2" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2, 1.8, -4.03)
+size = Vector3(0.08, 1.3, 0.05)
+material = SubResource("mat_walls")
+
+[node name="WindowFrameR1" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 1.8, -4.03)
+size = Vector3(1.9, 0.08, 0.05)
+material = SubResource("mat_walls")
+
+[node name="WindowFrameR2" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 1.8, -4.03)
+size = Vector3(0.08, 1.3, 0.05)
+material = SubResource("mat_walls")
+
+[node name="Collision" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+
+[node name="CollisionShape" type="BoxShape3D" parent="Collision"]
+size = Vector3(14, 5, 9)

@@ -1,0 +1,16 @@
+[gd_scene load_steps=4 format=3 uid="uid://main_scene_001"]
+
+[ext_resource type="PackedScene" uid="uid://house_scene_001" path="res://house.tscn" id="1_house"]
+[ext_resource type="PackedScene" uid="uid://cat_player_001" path="res://player/cat_player.tscn" id="2_player"]
+[ext_resource type="PackedScene" uid="uid://game_camera_001" path="res://camera/game_camera.tscn" id="3_camera"]
+
+[node name="Main" type="Node3D"]
+
+[node name="House" parent="." instance=ExtResource("1_house")]
+
+[node name="CatPlayer" parent="." instance=ExtResource("2_player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0.5, 4)
+
+[node name="GameCamera" parent="." instance=ExtResource("3_camera")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 2, 6)
+target_path = NodePath("../CatPlayer")
