@@ -3,9 +3,10 @@
 /android/
 *.import
 
-# Large asset packs (stored locally, not in repo)
-# Cats Pack by Malbers Animations on CGTrader
-catspack_fbx/
+# Cats Pack by Malbers Animations (commercial license)
+# Only include the specific models used in the game
+catspack_fbx/*
+!catspack_fbx/CatStray_Anim_IP.fbx
 catspack_obj/
 
 # OS
