@@ -50,20 +50,25 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _input(event: InputEvent) -> void:
-	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
-		var motion := event as InputEventMouseMotion
-		_yaw -= motion.relative.x * mouse_sensitivity
-		_pitch -= motion.relative.y * mouse_sensitivity
-		_pitch = clamp(_pitch, deg_to_rad(pitch_min_degrees), deg_to_rad(pitch_max_degrees))
-	
-	# Mouse wheel zoom
+	# Click to capture mouse (required by most OS for security)
 	if event is InputEventMouseButton:
 		var mouse_event := event as InputEventMouseButton
+		if mouse_event.pressed and mouse_event.button_index == MOUSE_BUTTON_LEFT:
+			if Input.get_mouse_mode() != Input.MOUSE_MODE_CAPTURED:
+				Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+		
+		# Mouse wheel zoom
 		if mouse_event.pressed:
 			if mouse_event.button_index == MOUSE_BUTTON_WHEEL_UP:
 				_target_distance = clamp(_target_distance - zoom_speed, min_distance, max_distance)
 			elif mouse_event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
 				_target_distance = clamp(_target_distance + zoom_speed, min_distance, max_distance)
+	
+	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
+		var motion := event as InputEventMouseMotion
+		_yaw -= motion.relative.x * mouse_sensitivity
+		_pitch -= motion.relative.y * mouse_sensitivity
+		_pitch = clamp(_pitch, deg_to_rad(pitch_min_degrees), deg_to_rad(pitch_max_degrees))
 
 
 func _physics_process(delta: float) -> void:
