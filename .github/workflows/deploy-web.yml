@@ -31,7 +31,7 @@ jobs:
       - name: Ensure coi-serviceworker exists
         run: |
           if [ ! -f build/web/coi-serviceworker.js ]; then
-            curl -fsSL -o build/web/coi-serviceworker.js \
+            wget -q -O build/web/coi-serviceworker.js \
               https://raw.githubusercontent.com/niccokunzmann/niccokunzmann.github.io/master/coi-serviceworker/coi-serviceworker.js
           fi
 
