@@ -27,50 +27,37 @@ func _apply_material() -> void:
 	if parent == null:
 		return
 
-	var body_count := 0
+	# First pass: collect all meshes
+	var body_meshes: Array[MeshInstance3D] = []
 	var eye_count := 0
-	var outline_count := 0
-	var result = _apply_material_recursive(parent)
-	body_count = result[0]
-	eye_count = result[1]
-	outline_count = result[2]
-	print("CatMaterialApplier: Applied body material to ", body_count, " meshes, eye material to ", eye_count, " meshes, outline to ", outline_count, " meshes")
+	_collect_meshes(parent, body_meshes, eye_count)
 
-func _apply_material_recursive(node: Node) -> Array:
-	var body_count := 0
-	var eye_count := 0
+	# Second pass: add outlines to body meshes (after recursion is done)
 	var outline_count := 0
+	if outline_material:
+		for mesh_instance in body_meshes:
+			var outline := MeshInstance3D.new()
+			outline.name = mesh_instance.name + "_Outline"
+			outline.mesh = mesh_instance.mesh
+			outline.skeleton = mesh_instance.skeleton
+			outline.skin = mesh_instance.skin
+			outline.material_override = outline_material
+			mesh_instance.add_child(outline)
+			_outline_meshes.append(outline)
+			outline_count += 1
 
+	print("CatMaterialApplier: Applied body material to ", body_meshes.size(), " meshes, outline to ", outline_count, " meshes")
+
+func _collect_meshes(node: Node, body_meshes: Array[MeshInstance3D], eye_count: int) -> void:
 	if node is MeshInstance3D:
 		var mesh_instance := node as MeshInstance3D
 		var node_name := node.name.to_lower()
 
-		# Check if this is an eye mesh
 		if "eye" in node_name or "cornea" in node_name or "iris" in node_name or "pupil" in node_name:
 			mesh_instance.material_override = _eye_material
-			eye_count += 1
 		else:
-			# Apply fur material to body
 			mesh_instance.material_override = material
-			body_count += 1
+			body_meshes.append(mesh_instance)
 
-			# Create outline duplicate for x-ray through walls
-			if outline_material:
-				var outline := MeshInstance3D.new()
-				outline.name = node.name + "_Outline"
-				outline.mesh = mesh_instance.mesh
-				outline.skeleton = mesh_instance.skeleton
-				outline.skin = mesh_instance.skin
-				outline.material_override = outline_material
-				mesh_instance.add_child(outline)
-				_outline_meshes.append(outline)
-				outline_count += 1
-
-	# Recurse to children
 	for child in node.get_children():
-		var result = _apply_material_recursive(child)
-		body_count += result[0]
-		eye_count += result[1]
-		outline_count += result[2]
-
-	return [body_count, eye_count, outline_count]
+		_collect_meshes(child, body_meshes, eye_count)
