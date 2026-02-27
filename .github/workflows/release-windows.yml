@@ -1,0 +1,68 @@
+name: Release Windows Build
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: barichello/godot-ci:4.5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup export templates
+        run: |
+          mkdir -p /github/home/.local/share/godot/export_templates/4.5.stable
+          mv /root/.local/share/godot/export_templates/4.5.stable/* /github/home/.local/share/godot/export_templates/4.5.stable/ 2>/dev/null || true
+
+      - name: Import project
+        run: |
+          godot --headless --import 2>&1 || true
+          godot --headless --import 2>&1 || true
+
+      - name: Export to Windows
+        run: |
+          mkdir -p build/windows
+          godot --headless --export-release "Windows" build/windows/CrimeCats.exe
+
+      - name: Create zip
+        run: |
+          cd build/windows
+          zip -r ../../CrimeCats-Windows.zip .
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-build
+          path: CrimeCats-Windows.zip
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: windows-build
+
+      - name: Delete existing latest release
+        run: gh release delete latest --yes --cleanup-tag || true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+
+      - name: Create release
+        run: |
+          gh release create latest CrimeCats-Windows.zip \
+            --title "Crime Cats - Latest Build" \
+            --notes "Automated Windows build from the latest commit on master." \
+            --prerelease
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
