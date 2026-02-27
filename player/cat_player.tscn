@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://cat_player_001"]
+[gd_scene load_steps=8 format=3 uid="uid://cat_player_001"]
 
 [ext_resource type="Script" path="res://player/movement_controller.gd" id="1_movement"]
 [ext_resource type="PackedScene" uid="uid://chhc7epvh08hm" path="res://catspack_fbx/CatStray_Anim_IP.fbx" id="2_cat_model"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" path="res://player/cat_material_applier.gd" id="4_mat_applier"]
 [ext_resource type="Material" path="res://assets/materials/bengal_cat.tres" id="5_bengal_mat"]
 [ext_resource type="Script" path="res://scripts/cat_attack_hitbox.gd" id="6_attack_hitbox"]
+[ext_resource type="Material" path="res://assets/materials/cat_outline.tres" id="7_outline_mat"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_1"]
 radius = 0.15
@@ -43,6 +44,7 @@ animation_player_path = NodePath("../Visuals/CatModel/AnimationPlayer")
 [node name="MaterialApplier" type="Node" parent="Visuals"]
 script = ExtResource("4_mat_applier")
 material = ExtResource("5_bengal_mat")
+outline_material = ExtResource("7_outline_mat")
 
 [node name="AttackHitbox" type="Area3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0.3)
